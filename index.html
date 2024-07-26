@@ -1277,7 +1277,16 @@ function showCalculators() {
                     calculatorsList.appendChild(calculatorCard);
                 });
             }
-  
+        const totalImpairmentCard = document.createElement('div');
+    totalImpairmentCard.classList.add('calculator-card');
+    totalImpairmentCard.id = 'total-impairment-card';
+    totalImpairmentCard.innerHTML = `
+        <h3 id="total-impairment-title">Total Impairment</h3>
+        <div id="impairment-breakdown"></div>
+        <p class="total-impairment"><strong>Total: <span id="total-impairment-result">0 UE = 0 WPI</span></strong></p>
+    `;
+    calculatorsList.appendChild(totalImpairmentCard);
+    
             setupCalculatorEventListeners();
             updateTotalImpairment();
         }

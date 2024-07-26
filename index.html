@@ -1,0 +1,1613 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upper Extremity Impairment Calculator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            padding: 20px;
+        }
+        h1, h2, h3 {
+            color: #333;
+            text-align: center;
+        }
+        .card-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        .card {
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .card:hover {
+            background-color: #e9e9e9;
+            transform: translateY(-5px);
+        }
+        .card.selected {
+            background-color: #1E90FF;
+            color: white;
+        }
+        button {
+            display: block;
+            width: 200px;
+            margin: 20px auto;
+            padding: 10px;
+            background-color: #1E90FF;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        button:hover {
+            background-color: #1873CC;
+        }
+        .options-container, .calculators-container {
+            margin-top: 20px;
+        }
+        .option {
+            background-color: #f0f0f0;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 10px;
+            margin-bottom: 10px;
+            cursor: pointer;
+        }
+        .option:hover {
+            background-color: #e0e0e0;
+        }
+        .option.selected {
+            background-color: #1E90FF;
+            color: white;
+        }
+        .calculator-card {
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .calculator-card h3 {
+            margin-top: 0;
+        }
+        .rom-table, .strength-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        .rom-table th, .rom-table td, .strength-table th, .strength-table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
+        }
+        .rom-table th, .strength-table .header-row th {
+            background-color: #1E90FF;
+            color: white;
+        }
+        .rom-table input[type="number"], .strength-table input[type="number"] {
+            width: 60px;
+            padding: 5px;
+            text-align: center;
+        }
+        .instructions, .reference {
+            margin-top: 20px;
+            font-size: 0.9em;
+        }
+        .arthroplasty-options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .arthroplasty-option {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+        }
+        .arthroplasty-option:hover {
+            background-color: #f0f0f0;
+        }
+        .arthroplasty-option input[type="radio"] {
+            display: none;
+        }
+        .arthroplasty-option label {
+            cursor: pointer;
+            padding-left: 25px;
+            position: relative;
+        }
+        .arthroplasty-option label::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 18px;
+            height: 18px;
+            border: 2px solid #1E90FF;
+            border-radius: 50%;
+        }
+        .arthroplasty-option input[type="radio"]:checked + label::after {
+            content: '';
+            position: absolute;
+            left: 5px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 12px;
+            height: 12px;
+            background-color: #1E90FF;
+            border-radius: 50%;
+        }
+        .arthroplasty-option input[type="radio"]:checked + label {
+            color: #1E90FF;
+            font-weight: bold;
+        }
+                .instability-options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .instability-option {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            border: 1px solid #1E90FF;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+            background-color: white;
+        }
+        .instability-option:hover {
+            background-color: #F0F8FF;
+        }
+        .instability-option input[type="radio"] {
+            display: none;
+        }
+        .instability-option label {
+            cursor: pointer;
+            padding-left: 25px;
+            position: relative;
+            width: 100%;
+        }
+        .instability-option label::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 18px;
+            height: 18px;
+            border: 2px solid #1E90FF;
+            border-radius: 50%;
+        }
+        .instability-option input[type="radio"]:checked + label::after {
+            content: '';
+            position: absolute;
+            left: 5px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 12px;
+            height: 12px;
+            background-color: #1E90FF;
+            border-radius: 50%;
+        }
+        .instability-option input[type="radio"]:checked + label {
+            color: #1E90FF;
+            font-weight: bold;
+        }
+            .synovial-hypertrophy-table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0 8px;
+        margin-top: 15px;
+    }
+    .synovial-hypertrophy-table th,
+    .synovial-hypertrophy-table td {
+        padding: 10px;
+        text-align: center;
+        border: 1px solid #ddd;
+    }
+    .synovial-hypertrophy-table thead th {
+        background-color: #1E90FF;
+        color: white;
+        font-weight: bold;
+    }
+    .synovial-hypertrophy-table tbody tr:nth-child(even) {
+        background-color: #f9f9f9;
+    }
+    .synovial-hypertrophy-table tbody tr:hover {
+        background-color: #f0f0f0;
+    }
+    .synovial-checkbox {
+        margin-right: 5px;
+    }
+    .instructions, .reference {
+        margin-top: 15px;
+        font-size: 0.9em;
+        color: #555;
+    }
+        .total-impairment {
+            font-weight: bold;
+            margin-top: 10px;
+            font-size: 1.1em;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Upper Extremity Impairment Calculator</h1>
+        <div class="card-container">
+            <div class="card" data-value="shoulder">Shoulder</div>
+            <div class="card" data-value="elbow">Elbow</div>
+            <div class="card" data-value="wrist">Wrist</div>
+            <div class="card" data-value="thumb">Thumb</div>
+            <div class="card" data-value="index">Index Finger</div>
+            <div class="card" data-value="middle">Middle Finger</div>
+            <div class="card" data-value="ring">Ring Finger</div>
+            <div class="card" data-value="little">Little Finger</div>
+            <div class="card" data-value="nerve">Peripheral Nerve Disorders</div>
+            <div class="card" data-value="vascular">Peripheral Vascular Disorders</div>
+            <div class="card" data-value="grip">Grip/Pinch Strength</div>
+            <div class="card" data-value="amputation">Arm Amputation</div>
+        </div>
+        <button id="calculate">Calculate Impairment</button>
+        <div id="result"></div>
+        <div class="options-container" id="optionsContainer" style="display: none;">
+            <h2 id="currentCardTitle"></h2>
+            <div id="optionsList"></div>
+            <button id="nextCard">Next</button>
+        </div>
+        <div class="calculators-container" id="calculatorsContainer" style="display: none;">
+            <h2>Impairment Calculators</h2>
+            <div id="calculatorsList"></div>
+            <div class="calculator-card">
+                <h3>Total Impairment</h3>
+                <div id="totalImpairment"></div>
+            </div>
+            <button id="finalizeImpairment">Finalize Impairment</button>
+        </div>
+    </div>
+
+<script>
+// Shoulder Joint Flexion & Extension data
+const SHOULDERFlexionExtensionData = [
+    { flexion: '>180', ueFlexion: 0, extension: '<-180', ueExtension: 30, ankylosis: '>180', ueAnkylosis: 30 },
+    { flexion: 180, ueFlexion: 0, extension: -180, ueExtension: 30, ankylosis: 180, ueAnkylosis: 30 },
+    { flexion: 179, ueFlexion: 0, extension: -179, ueExtension: 30, ankylosis: 179, ueAnkylosis: 30 },
+    { flexion: 178, ueFlexion: 0, extension: -178, ueExtension: 30, ankylosis: 178, ueAnkylosis: 30 },
+    { flexion: 177, ueFlexion: 0, extension: -177, ueExtension: 30, ankylosis: 177, ueAnkylosis: 30 },
+    { flexion: 176, ueFlexion: 0, extension: -176, ueExtension: 30, ankylosis: 176, ueAnkylosis: 30 },
+    { flexion: 175, ueFlexion: 1, extension: -175, ueExtension: 30, ankylosis: 175, ueAnkylosis: 30 },
+    { flexion: 174, ueFlexion: 1, extension: -174, ueExtension: 29, ankylosis: 174, ueAnkylosis: 30 },
+    { flexion: 173, ueFlexion: 1, extension: -173, ueExtension: 29, ankylosis: 173, ueAnkylosis: 30 },
+    { flexion: 172, ueFlexion: 1, extension: -172, ueExtension: 29, ankylosis: 172, ueAnkylosis: 30 },
+    { flexion: 171, ueFlexion: 1, extension: -171, ueExtension: 29, ankylosis: 171, ueAnkylosis: 30 },
+    { flexion: 170, ueFlexion: 1, extension: -170, ueExtension: 29, ankylosis: 170, ueAnkylosis: 30 },
+    { flexion: 169, ueFlexion: 1, extension: -169, ueExtension: 29, ankylosis: 169, ueAnkylosis: 30 },
+    { flexion: 168, ueFlexion: 1, extension: -168, ueExtension: 29, ankylosis: 168, ueAnkylosis: 30 },
+    { flexion: 167, ueFlexion: 1, extension: -167, ueExtension: 29, ankylosis: 167, ueAnkylosis: 30 },
+    { flexion: 166, ueFlexion: 1, extension: -166, ueExtension: 29, ankylosis: 166, ueAnkylosis: 30 },
+    { flexion: 165, ueFlexion: 1, extension: -165, ueExtension: 29, ankylosis: 165, ueAnkylosis: 30 },
+    { flexion: 164, ueFlexion: 1, extension: -164, ueExtension: 28, ankylosis: 164, ueAnkylosis: 29 },
+    { flexion: 163, ueFlexion: 1, extension: -163, ueExtension: 28, ankylosis: 163, ueAnkylosis: 29 },
+    { flexion: 162, ueFlexion: 1, extension: -162, ueExtension: 28, ankylosis: 162, ueAnkylosis: 29 },
+    { flexion: 161, ueFlexion: 1, extension: -161, ueExtension: 28, ankylosis: 161, ueAnkylosis: 29 },
+    { flexion: 160, ueFlexion: 1, extension: -160, ueExtension: 28, ankylosis: 160, ueAnkylosis: 29 },
+    { flexion: 159, ueFlexion: 1, extension: -159, ueExtension: 28, ankylosis: 159, ueAnkylosis: 29 },
+    { flexion: 158, ueFlexion: 1, extension: -158, ueExtension: 28, ankylosis: 158, ueAnkylosis: 29 },
+    { flexion: 157, ueFlexion: 1, extension: -157, ueExtension: 28, ankylosis: 157, ueAnkylosis: 29 },
+    { flexion: 156, ueFlexion: 1, extension: -156, ueExtension: 28, ankylosis: 156, ueAnkylosis: 29 },
+    { flexion: 155, ueFlexion: 2, extension: -155, ueExtension: 28, ankylosis: 155, ueAnkylosis: 29 },
+    { flexion: 154, ueFlexion: 2, extension: -154, ueExtension: 27, ankylosis: 154, ueAnkylosis: 29 },
+    { flexion: 153, ueFlexion: 2, extension: -153, ueExtension: 27, ankylosis: 153, ueAnkylosis: 29 },
+    { flexion: 152, ueFlexion: 2, extension: -152, ueExtension: 27, ankylosis: 152, ueAnkylosis: 29 },
+    { flexion: 151, ueFlexion: 2, extension: -151, ueExtension: 27, ankylosis: 151, ueAnkylosis: 29 },
+    { flexion: 150, ueFlexion: 2, extension: -150, ueExtension: 27, ankylosis: 150, ueAnkylosis: 29 },
+    { flexion: 149, ueFlexion: 2, extension: -149, ueExtension: 27, ankylosis: 149, ueAnkylosis: 29 },
+    { flexion: 148, ueFlexion: 2, extension: -148, ueExtension: 27, ankylosis: 148, ueAnkylosis: 29 },
+    { flexion: 147, ueFlexion: 2, extension: -147, ueExtension: 27, ankylosis: 147, ueAnkylosis: 29 },
+    { flexion: 146, ueFlexion: 2, extension: -146, ueExtension: 27, ankylosis: 146, ueAnkylosis: 29 },
+    { flexion: 145, ueFlexion: 3, extension: -145, ueExtension: 27, ankylosis: 145, ueAnkylosis: 29 },
+    { flexion: 144, ueFlexion: 3, extension: -144, ueExtension: 26, ankylosis: 144, ueAnkylosis: 29 },
+    { flexion: 143, ueFlexion: 3, extension: -143, ueExtension: 26, ankylosis: 143, ueAnkylosis: 29 },
+    { flexion: 142, ueFlexion: 3, extension: -142, ueExtension: 26, ankylosis: 142, ueAnkylosis: 29 },
+    { flexion: 141, ueFlexion: 3, extension: -141, ueExtension: 26, ankylosis: 141, ueAnkylosis: 29 },
+    { flexion: 140, ueFlexion: 3, extension: -140, ueExtension: 26, ankylosis: 140, ueAnkylosis: 29 },
+    { flexion: 139, ueFlexion: 3, extension: -139, ueExtension: 26, ankylosis: 139, ueAnkylosis: 29 },
+    { flexion: 138, ueFlexion: 3, extension: -138, ueExtension: 26, ankylosis: 138, ueAnkylosis: 29 },
+    { flexion: 137, ueFlexion: 3, extension: -137, ueExtension: 26, ankylosis: 137, ueAnkylosis: 29 },
+    { flexion: 136, ueFlexion: 3, extension: -136, ueExtension: 26, ankylosis: 136, ueAnkylosis: 29 },
+    { flexion: 135, ueFlexion: 3, extension: -135, ueExtension: 26, ankylosis: 135, ueAnkylosis: 29 },
+    { flexion: 134, ueFlexion: 3, extension: -134, ueExtension: 25, ankylosis: 134, ueAnkylosis: 28 },
+    { flexion: 133, ueFlexion: 3, extension: -133, ueExtension: 25, ankylosis: 133, ueAnkylosis: 28 },
+    { flexion: 132, ueFlexion: 3, extension: -132, ueExtension: 25, ankylosis: 132, ueAnkylosis: 28 },
+    { flexion: 131, ueFlexion: 3, extension: -131, ueExtension: 25, ankylosis: 131, ueAnkylosis: 28 },
+    { flexion: 130, ueFlexion: 3, extension: -130, ueExtension: 25, ankylosis: 130, ueAnkylosis: 28 },
+    { flexion: 129, ueFlexion: 3, extension: -129, ueExtension: 25, ankylosis: 129, ueAnkylosis: 28 },
+    { flexion: 128, ueFlexion: 3, extension: -128, ueExtension: 25, ankylosis: 128, ueAnkylosis: 28 },
+    { flexion: 127, ueFlexion: 3, extension: -127, ueExtension: 25, ankylosis: 127, ueAnkylosis: 28 },
+    { flexion: 126, ueFlexion: 3, extension: -126, ueExtension: 25, ankylosis: 126, ueAnkylosis: 28 },
+    { flexion: 125, ueFlexion: 4, extension: -125, ueExtension: 25, ankylosis: 125, ueAnkylosis: 28 },
+    { flexion: 124, ueFlexion: 4, extension: -124, ueExtension: 24, ankylosis: 124, ueAnkylosis: 28 },
+    { flexion: 123, ueFlexion: 4, extension: -123, ueExtension: 24, ankylosis: 123, ueAnkylosis: 28 },
+    { flexion: 122, ueFlexion: 4, extension: -122, ueExtension: 24, ankylosis: 122, ueAnkylosis: 28 },
+    { flexion: 121, ueFlexion: 4, extension: -121, ueExtension: 24, ankylosis: 121, ueAnkylosis: 28 },
+    { flexion: 120, ueFlexion: 4, extension: -120, ueExtension: 24, ankylosis: 120, ueAnkylosis: 28 },
+    { flexion: 119, ueFlexion: 4, extension: -119, ueExtension: 24, ankylosis: 119, ueAnkylosis: 28 },
+    { flexion: 118, ueFlexion: 4, extension: -118, ueExtension: 24, ankylosis: 118, ueAnkylosis: 28 },
+    { flexion: 117, ueFlexion: 4, extension: -117, ueExtension: 24, ankylosis: 117, ueAnkylosis: 28 },
+    { flexion: 116, ueFlexion: 4, extension: -116, ueExtension: 24, ankylosis: 116, ueAnkylosis: 28 },
+    { flexion: 115, ueFlexion: 5, extension: -115, ueExtension: 24, ankylosis: 115, ueAnkylosis: 28 },
+    { flexion: 114, ueFlexion: 5, extension: -114, ueExtension: 23, ankylosis: 114, ueAnkylosis: 28 },
+    { flexion: 113, ueFlexion: 5, extension: -113, ueExtension: 23, ankylosis: 113, ueAnkylosis: 28 },
+    { flexion: 112, ueFlexion: 5, extension: -112, ueExtension: 23, ankylosis: 112, ueAnkylosis: 28 },
+    { flexion: 111, ueFlexion: 5, extension: -111, ueExtension: 23, ankylosis: 111, ueAnkylosis: 28 },
+    { flexion: 110, ueFlexion: 5, extension: -110, ueExtension: 23, ankylosis: 110, ueAnkylosis: 28 },
+    { flexion: 109, ueFlexion: 5, extension: -109, ueExtension: 23, ankylosis: 109, ueAnkylosis: 28 },
+    { flexion: 108, ueFlexion: 5, extension: -108, ueExtension: 23, ankylosis: 108, ueAnkylosis: 28 },
+    { flexion: 107, ueFlexion: 5, extension: -107, ueExtension: 23, ankylosis: 107, ueAnkylosis: 28 },
+    { flexion: 106, ueFlexion: 5, extension: -106, ueExtension: 23, ankylosis: 106, ueAnkylosis: 28 },
+    { flexion: 105, ueFlexion: 5, extension: -105, ueExtension: 23, ankylosis: 105, ueAnkylosis: 28 },
+    { flexion: 104, ueFlexion: 5, extension: -104, ueExtension: 22, ankylosis: 104, ueAnkylosis: 27 },
+    { flexion: 103, ueFlexion: 5, extension: -103, ueExtension: 22, ankylosis: 103, ueAnkylosis: 27 },
+    { flexion: 102, ueFlexion: 5, extension: -102, ueExtension: 22, ankylosis: 102, ueAnkylosis: 27 },
+    { flexion: 101, ueFlexion: 5, extension: -101, ueExtension: 22, ankylosis: 101, ueAnkylosis: 27 },
+    { flexion: 100, ueFlexion: 5, extension: -100, ueExtension: 22, ankylosis: 100, ueAnkylosis: 27 },
+    { flexion: 99, ueFlexion: 5, extension: -99, ueExtension: 22, ankylosis: 99, ueAnkylosis: 27 },
+    { flexion: 98, ueFlexion: 5, extension: -98, ueExtension: 22, ankylosis: 98, ueAnkylosis: 27 },
+    { flexion: 97, ueFlexion: 5, extension: -97, ueExtension: 22, ankylosis: 97, ueAnkylosis: 27 },
+    { flexion: 96, ueFlexion: 5, extension: -96, ueExtension: 22, ankylosis: 96, ueAnkylosis: 27 },
+    { flexion: 95, ueFlexion: 6, extension: -95, ueExtension: 22, ankylosis: 95, ueAnkylosis: 27 },
+    { flexion: 94, ueFlexion: 6, extension: -94, ueExtension: 21, ankylosis: 94, ueAnkylosis: 27 },
+    { flexion: 93, ueFlexion: 6, extension: -93, ueExtension: 21, ankylosis: 93, ueAnkylosis: 27 },
+    { flexion: 92, ueFlexion: 6, extension: -92, ueExtension: 21, ankylosis: 92, ueAnkylosis: 27 },
+    { flexion: 91, ueFlexion: 6, extension: -91, ueExtension: 21, ankylosis: 91, ueAnkylosis: 27 },
+    { flexion: 90, ueFlexion: 6, extension: -90, ueExtension: 21, ankylosis: 90, ueAnkylosis: 27 },
+    { flexion: 89, ueFlexion: 6, extension: -89, ueExtension: 21, ankylosis: 89, ueAnkylosis: 27 },
+    { flexion: 88, ueFlexion: 6, extension: -88, ueExtension: 20, ankylosis: 88, ueAnkylosis: 27 },
+    { flexion: 87, ueFlexion: 6, extension: -87, ueExtension: 20, ankylosis: 87, ueAnkylosis: 26 },
+    { flexion: 86, ueFlexion: 6, extension: -86, ueExtension: 20, ankylosis: 86, ueAnkylosis: 26 },
+    { flexion: 85, ueFlexion: 7, extension: -85, ueExtension: 20, ankylosis: 85, ueAnkylosis: 26 },
+    { flexion: 84, ueFlexion: 7, extension: -84, ueExtension: 19, ankylosis: 84, ueAnkylosis: 26 },
+    { flexion: 83, ueFlexion: 7, extension: -83, ueExtension: 19, ankylosis: 83, ueAnkylosis: 26 },
+    { flexion: 82, ueFlexion: 7, extension: -82, ueExtension: 19, ankylosis: 82, ueAnkylosis: 25 },
+    { flexion: 81, ueFlexion: 7, extension: -81, ueExtension: 18, ankylosis: 81, ueAnkylosis: 25 },
+    { flexion: 80, ueFlexion: 7, extension: -80, ueExtension: 18, ankylosis: 80, ueAnkylosis: 25 },
+    { flexion: 79, ueFlexion: 7, extension: -79, ueExtension: 18, ankylosis: 79, ueAnkylosis: 25 },
+    { flexion: 78, ueFlexion: 7, extension: -78, ueExtension: 17, ankylosis: 78, ueAnkylosis: 24 },
+    { flexion: 77, ueFlexion: 7, extension: -77, ueExtension: 17, ankylosis: 77, ueAnkylosis: 24 },
+    { flexion: 76, ueFlexion: 7, extension: -76, ueExtension: 17, ankylosis: 76, ueAnkylosis: 24 },
+    { flexion: 75, ueFlexion: 7, extension: -75, ueExtension: 17, ankylosis: 75, ueAnkylosis: 24 },
+    { flexion: 74, ueFlexion: 7, extension: -74, ueExtension: 16, ankylosis: 74, ueAnkylosis: 23 },
+    { flexion: 73, ueFlexion: 7, extension: -73, ueExtension: 16, ankylosis: 73, ueAnkylosis: 23 },
+    { flexion: 72, ueFlexion: 7, extension: -72, ueExtension: 16, ankylosis: 72, ueAnkylosis: 23 },
+    { flexion: 71, ueFlexion: 7, extension: -71, ueExtension: 15, ankylosis: 71, ueAnkylosis: 22 },
+    { flexion: 70, ueFlexion: 7, extension: -70, ueExtension: 15, ankylosis: 70, ueAnkylosis: 22 },
+    { flexion: 69, ueFlexion: 7, extension: -69, ueExtension: 15, ankylosis: 69, ueAnkylosis: 22 },
+    { flexion: 68, ueFlexion: 7, extension: -68, ueExtension: 14, ankylosis: 68, ueAnkylosis: 22 },
+    { flexion: 67, ueFlexion: 7, extension: -67, ueExtension: 14, ankylosis: 67, ueAnkylosis: 21 },
+    { flexion: 66, ueFlexion: 7, extension: -66, ueExtension: 14, ankylosis: 66, ueAnkylosis: 21 },
+    { flexion: 65, ueFlexion: 8, extension: -65, ueExtension: 14, ankylosis: 65, ueAnkylosis: 21 },
+    { flexion: 64, ueFlexion: 8, extension: -64, ueExtension: 13, ankylosis: 64, ueAnkylosis: 21 },
+    { flexion: 63, ueFlexion: 8, extension: -63, ueExtension: 13, ankylosis: 63, ueAnkylosis: 21 },
+    { flexion: 62, ueFlexion: 8, extension: -62, ueExtension: 13, ankylosis: 62, ueAnkylosis: 20 },
+    { flexion: 61, ueFlexion: 8, extension: -61, ueExtension: 12, ankylosis: 61, ueAnkylosis: 20 },
+    { flexion: 60, ueFlexion: 8, extension: -60, ueExtension: 12, ankylosis: 60, ueAnkylosis: 20 },
+    { flexion: 59, ueFlexion: 8, extension: -59, ueExtension: 12, ankylosis: 59, ueAnkylosis: 20 },
+    { flexion: 58, ueFlexion: 8, extension: -58, ueExtension: 11, ankylosis: 58, ueAnkylosis: 19 },
+    { flexion: 57, ueFlexion: 8, extension: -57, ueExtension: 11, ankylosis: 57, ueAnkylosis: 19 },
+    { flexion: 56, ueFlexion: 8, extension: -56, ueExtension: 10, ankylosis: 56, ueAnkylosis: 19 },
+    { flexion: 55, ueFlexion: 9, extension: -55, ueExtension: 10, ankylosis: 55, ueAnkylosis: 19 },
+    { flexion: 54, ueFlexion: 9, extension: -54, ueExtension: 10, ankylosis: 54, ueAnkylosis: 18 },
+    { flexion: 53, ueFlexion: 9, extension: -53, ueExtension: 9, ankylosis: 53, ueAnkylosis: 18 },
+    { flexion: 52, ueFlexion: 9, extension: -52, ueExtension: 9, ankylosis: 52, ueAnkylosis: 18 },
+    { flexion: 51, ueFlexion: 9, extension: -51, ueExtension: 8, ankylosis: 51, ueAnkylosis: 17 },
+    { flexion: 50, ueFlexion: 9, extension: -50, ueExtension: 8, ankylosis: 50, ueAnkylosis: 17 },
+    { flexion: 49, ueFlexion: 9, extension: -49, ueExtension: 8, ankylosis: 49, ueAnkylosis: 17 },
+    { flexion: 48, ueFlexion: 9, extension: -48, ueExtension: 7, ankylosis: 48, ueAnkylosis: 17 },
+    { flexion: 47, ueFlexion: 9, extension: -47, ueExtension: 7, ankylosis: 47, ueAnkylosis: 16 },
+    { flexion: 46, ueFlexion: 9, extension: -46, ueExtension: 7, ankylosis: 46, ueAnkylosis: 16 },
+    { flexion: 45, ueFlexion: 10, extension: -45, ueExtension: 7, ankylosis: 45, ueAnkylosis: 16 },
+    { flexion: 44, ueFlexion: 10, extension: -44, ueExtension: 6, ankylosis: 44, ueAnkylosis: 16 },
+    { flexion: 43, ueFlexion: 10, extension: -43, ueExtension: 6, ankylosis: 43, ueAnkylosis: 16 },
+    { flexion: 42, ueFlexion: 10, extension: -42, ueExtension: 6, ankylosis: 42, ueAnkylosis: 15 },
+    { flexion: 41, ueFlexion: 10, extension: -41, ueExtension: 5, ankylosis: 41, ueAnkylosis: 15 },
+    { flexion: 40, ueFlexion: 10, extension: -40, ueExtension: 5, ankylosis: 40, ueAnkylosis: 15 },
+    { flexion: 39, ueFlexion: 10, extension: -39, ueExtension: 5, ankylosis: 39, ueAnkylosis: 15 },
+    { flexion: 38, ueFlexion: 10, extension: -38, ueExtension: 5, ankylosis: 38, ueAnkylosis: 15 },
+    { flexion: 37, ueFlexion: 10, extension: -37, ueExtension: 5, ankylosis: 37, ueAnkylosis: 15 },
+    { flexion: 36, ueFlexion: 10, extension: -36, ueExtension: 5, ankylosis: 36, ueAnkylosis: 15 },
+    { flexion: 35, ueFlexion: 10, extension: -35, ueExtension: 5, ankylosis: 35, ueAnkylosis: 15 },
+    { flexion: 34, ueFlexion: 10, extension: -34, ueExtension: 5, ankylosis: 34, ueAnkylosis: 15 },
+    { flexion: 33, ueFlexion: 10, extension: -33, ueExtension: 5, ankylosis: 33, ueAnkylosis: 15 },
+    { flexion: 32, ueFlexion: 10, extension: -32, ueExtension: 5, ankylosis: 32, ueAnkylosis: 15 },
+    { flexion: 31, ueFlexion: 10, extension: -31, ueExtension: 5, ankylosis: 31, ueAnkylosis: 15 },
+    { flexion: 30, ueFlexion: 10, extension: -30, ueExtension: 5, ankylosis: 30, ueAnkylosis: 15 },
+    { flexion: 29, ueFlexion: 10, extension: -29, ueExtension: 5, ankylosis: 29, ueAnkylosis: 15 },
+    { flexion: 28, ueFlexion: 10, extension: -28, ueExtension: 5, ankylosis: 28, ueAnkylosis: 15 },
+    { flexion: 27, ueFlexion: 10, extension: -27, ueExtension: 5, ankylosis: 27, ueAnkylosis: 15 },
+    { flexion: 26, ueFlexion: 10, extension: -26, ueExtension: 5, ankylosis: 26, ueAnkylosis: 15 },
+    { flexion: 25, ueFlexion: 11, extension: -25, ueExtension: 5, ankylosis: 25, ueAnkylosis: 15 },
+    { flexion: 24, ueFlexion: 11, extension: -24, ueExtension: 4, ankylosis: 24, ueAnkylosis: 15 },
+    { flexion: 23, ueFlexion: 11, extension: -23, ueExtension: 4, ankylosis: 23, ueAnkylosis: 15 },
+    { flexion: 22, ueFlexion: 11, extension: -22, ueExtension: 4, ankylosis: 22, ueAnkylosis: 15 },
+    { flexion: 21, ueFlexion: 11, extension: -21, ueExtension: 4, ankylosis: 21, ueAnkylosis: 15 },
+    { flexion: 20, ueFlexion: 11, extension: -20, ueExtension: 4, ankylosis: 20, ueAnkylosis: 15 },
+    { flexion: 19, ueFlexion: 12, extension: -19, ueExtension: 4, ankylosis: 19, ueAnkylosis: 15 },
+    { flexion: 18, ueFlexion: 12, extension: -18, ueExtension: 4, ankylosis: 18, ueAnkylosis: 16 },
+    { flexion: 17, ueFlexion: 13, extension: -17, ueExtension: 4, ankylosis: 17, ueAnkylosis: 16 },
+    { flexion: 16, ueFlexion: 13, extension: -16, ueExtension: 4, ankylosis: 16, ueAnkylosis: 17 },
+    { flexion: 15, ueFlexion: 14, extension: -15, ueExtension: 4, ankylosis: 15, ueAnkylosis: 17 },
+    { flexion: 14, ueFlexion: 14, extension: -14, ueExtension: 3, ankylosis: 14, ueAnkylosis: 17 },
+    { flexion: 13, ueFlexion: 15, extension: -13, ueExtension: 3, ankylosis: 13, ueAnkylosis: 18 },
+    { flexion: 12, ueFlexion: 15, extension: -12, ueExtension: 3, ankylosis: 12, ueAnkylosis: 18 },
+    { flexion: 11, ueFlexion: 16, extension: -11, ueExtension: 3, ankylosis: 11, ueAnkylosis: 19 },
+    { flexion: 10, ueFlexion: 16, extension: -10, ueExtension: 3, ankylosis: 10, ueAnkylosis: 19 },
+    { flexion: 9, ueFlexion: 17, extension: -9, ueExtension: 3, ankylosis: 9, ueAnkylosis: 20 },
+    { flexion: 8, ueFlexion: 17, extension: -8, ueExtension: 3, ankylosis: 8, ueAnkylosis: 20 },
+    { flexion: 7, ueFlexion: 18, extension: -7, ueExtension: 3, ankylosis: 7, ueAnkylosis: 21 },
+    { flexion: 6, ueFlexion: 18, extension: -6, ueExtension: 3, ankylosis: 6, ueAnkylosis: 21 },
+    { flexion: 5, ueFlexion: 19, extension: -5, ueExtension: 3, ankylosis: 5, ueAnkylosis: 22 },
+    { flexion: 4, ueFlexion: 19, extension: -4, ueExtension: 3, ankylosis: 4, ueAnkylosis: 22 },
+    { flexion: 3, ueFlexion: 20, extension: -3, ueExtension: 3, ankylosis: 3, ueAnkylosis: 23 },
+    { flexion: 2, ueFlexion: 20, extension: -2, ueExtension: 3, ankylosis: 2, ueAnkylosis: 23 },
+    { flexion: 1, ueFlexion: 21, extension: -1, ueExtension: 3, ankylosis: 1, ueAnkylosis: 24 },
+    { flexion: 0, ueFlexion: 21, extension: 0, ueExtension: 3, ankylosis: 0, ueAnkylosis: 24 },
+    { flexion: -1, ueFlexion: 21, extension: 1, ueExtension: 3, ankylosis: -1, ueAnkylosis: 24 },
+    { flexion: -2, ueFlexion: 21, extension: 2, ueExtension: 3, ankylosis: -2, ueAnkylosis: 24 },
+    { flexion: -3, ueFlexion: 22, extension: 3, ueExtension: 3, ankylosis: -3, ueAnkylosis: 24 },
+    { flexion: -4, ueFlexion: 22, extension: 4, ueExtension: 3, ankylosis: -4, ueAnkylosis: 25 },
+    { flexion: -5, ueFlexion: 22, extension: 5, ueExtension: 3, ankylosis: -5, ueAnkylosis: 25 },
+    { flexion: -6, ueFlexion: 22, extension: 6, ueExtension: 2, ankylosis: -6, ueAnkylosis: 25 },
+    { flexion: -7, ueFlexion: 22, extension: 7, ueExtension: 2, ankylosis: -7, ueAnkylosis: 25 },
+    { flexion: -8, ueFlexion: 23, extension: 8, ueExtension: 2, ankylosis: -8, ueAnkylosis: 25 },
+    { flexion: -9, ueFlexion: 23, extension: 9, ueExtension: 2, ankylosis: -9, ueAnkylosis: 25 },
+    { flexion: -10, ueFlexion: 23, extension: 10, ueExtension: 2, ankylosis: -8, ueAnkylosis: 25 },
+    { flexion: -11, ueFlexion: 23, extension: 11, ueExtension: 2, ankylosis: -11, ueAnkylosis: 25 },
+    { flexion: -12, ueFlexion: 23, extension: 12, ueExtension: 2, ankylosis: -12, ueAnkylosis: 25 },
+    { flexion: -13, ueFlexion: 23, extension: 13, ueExtension: 2, ankylosis: -13, ueAnkylosis: 25 },
+    { flexion: -14, ueFlexion: 23, extension: 14, ueExtension: 2, ankylosis: -14, ueAnkylosis: 26 },
+    { flexion: -15, ueFlexion: 24, extension: 15, ueExtension: 2, ankylosis: -15, ueAnkylosis: 26 },
+    { flexion: -16, ueFlexion: 24, extension: 16, ueExtension: 2, ankylosis: -16, ueAnkylosis: 26 },
+    { flexion: -17, ueFlexion: 24, extension: 17, ueExtension: 2, ankylosis: -17, ueAnkylosis: 26 },
+    { flexion: -18, ueFlexion: 24, extension: 18, ueExtension: 2, ankylosis: -18, ueAnkylosis: 26 },
+    { flexion: -19, ueFlexion: 24, extension: 19, ueExtension: 2, ankylosis: -19, ueAnkylosis: 26 },
+    { flexion: -20, ueFlexion: 24, extension: 20, ueExtension: 2, ankylosis: -20, ueAnkylosis: 26 },
+    { flexion: -21, ueFlexion: 24, extension: 21, ueExtension: 2, ankylosis: -21, ueAnkylosis: 26 },
+    { flexion: -22, ueFlexion: 24, extension: 22, ueExtension: 2, ankylosis: -22, ueAnkylosis: 26 },
+    { flexion: -23, ueFlexion: 25, extension: 23, ueExtension: 2, ankylosis: -23, ueAnkylosis: 26 },
+    { flexion: -24, ueFlexion: 25, extension: 24, ueExtension: 2, ankylosis: -24, ueAnkylosis: 26 },
+    { flexion: -25, ueFlexion: 25, extension: 25, ueExtension: 2, ankylosis: -25, ueAnkylosis: 27 },
+    { flexion: -26, ueFlexion: 25, extension: 26, ueExtension: 1, ankylosis: -26, ueAnkylosis: 27 },
+    { flexion: -27, ueFlexion: 25, extension: 27, ueExtension: 1, ankylosis: -27, ueAnkylosis: 27 },
+    { flexion: -28, ueFlexion: 26, extension: 28, ueExtension: 1, ankylosis: -28, ueAnkylosis: 27 },
+    { flexion: -29, ueFlexion: 26, extension: 29, ueExtension: 1, ankylosis: -29, ueAnkylosis: 27 },
+    { flexion: -30, ueFlexion: 26, extension: 30, ueExtension: 1, ankylosis: -30, ueAnkylosis: 27 },
+    { flexion: -31, ueFlexion: 26, extension: 31, ueExtension: 1, ankylosis: -31, ueAnkylosis: 27 },
+    { flexion: -32, ueFlexion: 26, extension: 32, ueExtension: 1, ankylosis: -32, ueAnkylosis: 27 },
+    { flexion: -33, ueFlexion: 27, extension: 33, ueExtension: 1, ankylosis: -33, ueAnkylosis: 28 },
+    { flexion: -34, ueFlexion: 27, extension: 34, ueExtension: 1, ankylosis: -34, ueAnkylosis: 28 },
+    { flexion: -35, ueFlexion: 27, extension: 35, ueExtension: 1, ankylosis: -35, ueAnkylosis: 28 },
+    { flexion: -36, ueFlexion: 27, extension: 36, ueExtension: 1, ankylosis: -36, ueAnkylosis: 28 },
+    { flexion: -37, ueFlexion: 27, extension: 37, ueExtension: 1, ankylosis: -37, ueAnkylosis: 28 },
+    { flexion: -38, ueFlexion: 28, extension: 38, ueExtension: 1, ankylosis: -38, ueAnkylosis: 29 },
+    { flexion: -39, ueFlexion: 28, extension: 39, ueExtension: 1, ankylosis: -39, ueAnkylosis: 29 },
+    { flexion: -40, ueFlexion: 28, extension: 40, ueExtension: 1, ankylosis: -40, ueAnkylosis: 29 },
+    { flexion: -41, ueFlexion: 28, extension: 41, ueExtension: 1, ankylosis: -41, ueAnkylosis: 29 },
+    { flexion: -42, ueFlexion: 28, extension: 42, ueExtension: 1, ankylosis: -42, ueAnkylosis: 29 },
+    { flexion: -43, ueFlexion: 29, extension: 43, ueExtension: 1, ankylosis: -43, ueAnkylosis: 29 },
+    { flexion: -44, ueFlexion: 29, extension: 44, ueExtension: 1, ankylosis: -44, ueAnkylosis: 29 },
+    { flexion: -45, ueFlexion: 29, extension: 45, ueExtension: 1, ankylosis: -45, ueAnkylosis: 30 },
+    { flexion: -46, ueFlexion: 29, extension: 46, ueExtension: 0, ankylosis: -46, ueAnkylosis: 30 },
+    { flexion: -47, ueFlexion: 29, extension: 47, ueExtension: 0, ankylosis: -47, ueAnkylosis: 30 },
+    { flexion: -48, ueFlexion: 30, extension: 48, ueExtension: 0, ankylosis: -48, ueAnkylosis: 30 },
+    { flexion: -49, ueFlexion: 30, extension: 49, ueExtension: 0, ankylosis: -49, ueAnkylosis: 30 },
+    { flexion: -50, ueFlexion: 30, extension: 50, ueExtension: 0, ankylosis: -50, ueAnkylosis: 30 },
+    { flexion: '<-50', ueFlexion: 30, extension: '>50', ueExtension: 0, ankylosis: '<-50', ueAnkylosis: 30 }
+];
+
+// Shoulder Joint Abduction & Adduction data
+const SHOULDERAbductionAdductionData = [
+    { abduction: '>180', ueAbduction: 0, adduction: '<-180', ueAdduction: 18, ankylosis: '>180', ueAnkylosis: 18 },
+    { abduction: 180, ueAbduction: 0, adduction: -180, ueAdduction: 18, ankylosis: 180, ueAnkylosis: 18 },
+    { abduction: 179, ueAbduction: 0, adduction: -179, ueAdduction: 18, ankylosis: 179, ueAnkylosis: 18 },
+    { abduction: 178, ueAbduction: 0, adduction: -178, ueAdduction: 18, ankylosis: 178, ueAnkylosis: 18 },
+    { abduction: 177, ueAbduction: 0, adduction: -177, ueAdduction: 18, ankylosis: 177, ueAnkylosis: 18 },
+    { abduction: 176, ueAbduction: 0, adduction: -176, ueAdduction: 18, ankylosis: 176, ueAnkylosis: 18 },
+    { abduction: 175, ueAbduction: 0, adduction: -175, ueAdduction: 18, ankylosis: 175, ueAnkylosis: 18 },
+    { abduction: 174, ueAbduction: 0, adduction: -174, ueAdduction: 18, ankylosis: 174, ueAnkylosis: 18 },
+    { abduction: 173, ueAbduction: 0, adduction: -173, ueAdduction: 18, ankylosis: 173, ueAnkylosis: 18 },
+    { abduction: 172, ueAbduction: 0, adduction: -172, ueAdduction: 18, ankylosis: 172, ueAnkylosis: 18 },
+    { abduction: 171, ueAbduction: 0, adduction: -171, ueAdduction: 18, ankylosis: 171, ueAnkylosis: 18 },
+    { abduction: 170, ueAbduction: 0, adduction: -170, ueAdduction: 18, ankylosis: 170, ueAnkylosis: 18 },
+    { abduction: 169, ueAbduction: 0, adduction: -169, ueAdduction: 18, ankylosis: 169, ueAnkylosis: 18 },
+    { abduction: 168, ueAbduction: 0, adduction: -168, ueAdduction: 18, ankylosis: 168, ueAnkylosis: 18 },
+    { abduction: 167, ueAbduction: 0, adduction: -167, ueAdduction: 17, ankylosis: 167, ueAnkylosis: 18 },
+    { abduction: 166, ueAbduction: 0, adduction: -166, ueAdduction: 17, ankylosis: 166, ueAnkylosis: 18 },
+    { abduction: 165, ueAbduction: 1, adduction: -165, ueAdduction: 17, ankylosis: 165, ueAnkylosis: 18 },
+    { abduction: 164, ueAbduction: 1, adduction: -164, ueAdduction: 17, ankylosis: 164, ueAnkylosis: 17 },
+    { abduction: 163, ueAbduction: 1, adduction: -163, ueAdduction: 17, ankylosis: 163, ueAnkylosis: 17 },
+    { abduction: 162, ueAbduction: 1, adduction: -162, ueAdduction: 16, ankylosis: 162, ueAnkylosis: 17 },
+    { abduction: 161, ueAbduction: 1, adduction: -161, ueAdduction: 16, ankylosis: 161, ueAnkylosis: 17 },
+    { abduction: 160, ueAbduction: 1, adduction: -160, ueAdduction: 16, ankylosis: 160, ueAnkylosis: 17 },
+    { abduction: 159, ueAbduction: 1, adduction: -159, ueAdduction: 16, ankylosis: 159, ueAnkylosis: 17 },
+    { abduction: 158, ueAbduction: 1, adduction: -158, ueAdduction: 16, ankylosis: 158, ueAnkylosis: 17 },
+    { abduction: 157, ueAbduction: 1, adduction: -157, ueAdduction: 16, ankylosis: 157, ueAnkylosis: 17 },
+    { abduction: 156, ueAbduction: 1, adduction: -156, ueAdduction: 16, ankylosis: 156, ueAnkylosis: 17 },
+    { abduction: 155, ueAbduction: 1, adduction: -155, ueAdduction: 16, ankylosis: 155, ueAnkylosis: 17 },
+    { abduction: 154, ueAbduction: 1, adduction: -154, ueAdduction: 16, ankylosis: 154, ueAnkylosis: 17 },
+    { abduction: 153, ueAbduction: 1, adduction: -153, ueAdduction: 16, ankylosis: 153, ueAnkylosis: 17 },
+    { abduction: 152, ueAbduction: 1, adduction: -152, ueAdduction: 16, ankylosis: 152, ueAnkylosis: 17 },
+    { abduction: 151, ueAbduction: 1, adduction: -151, ueAdduction: 16, ankylosis: 151, ueAnkylosis: 17 },
+    { abduction: 150, ueAbduction: 1, adduction: -150, ueAdduction: 16, ankylosis: 150, ueAnkylosis: 17 },
+    { abduction: 149, ueAbduction: 1, adduction: -149, ueAdduction: 16, ankylosis: 149, ueAnkylosis: 17 },
+    { abduction: 148, ueAbduction: 1, adduction: -148, ueAdduction: 16, ankylosis: 148, ueAnkylosis: 17 },
+    { abduction: 147, ueAbduction: 1, adduction: -147, ueAdduction: 16, ankylosis: 147, ueAnkylosis: 17 },
+    { abduction: 146, ueAbduction: 1, adduction: -146, ueAdduction: 16, ankylosis: 146, ueAnkylosis: 17 },
+    { abduction: 145, ueAbduction: 2, adduction: -145, ueAdduction: 16, ankylosis: 145, ueAnkylosis: 17 },
+    { abduction: 144, ueAbduction: 2, adduction: -144, ueAdduction: 15, ankylosis: 144, ueAnkylosis: 17 },
+    { abduction: 143, ueAbduction: 2, adduction: -143, ueAdduction: 15, ankylosis: 143, ueAnkylosis: 17 },
+    { abduction: 142, ueAbduction: 2, adduction: -142, ueAdduction: 15, ankylosis: 142, ueAnkylosis: 17 },
+    { abduction: 141, ueAbduction: 2, adduction: -141, ueAdduction: 15, ankylosis: 141, ueAnkylosis: 17 },
+    { abduction: 140, ueAbduction: 2, adduction: -140, ueAdduction: 15, ankylosis: 140, ueAnkylosis: 17 },
+    { abduction: 139, ueAbduction: 2, adduction: -139, ueAdduction: 15, ankylosis: 139, ueAnkylosis: 17 },
+    { abduction: 138, ueAbduction: 2, adduction: -138, ueAdduction: 15, ankylosis: 138, ueAnkylosis: 17 },
+    { abduction: 137, ueAbduction: 2, adduction: -137, ueAdduction: 15, ankylosis: 137, ueAnkylosis: 17 },
+    { abduction: 136, ueAbduction: 2, adduction: -136, ueAdduction: 15, ankylosis: 136, ueAnkylosis: 17 },
+    { abduction: 135, ueAbduction: 2, adduction: -135, ueAdduction: 15, ankylosis: 135, ueAnkylosis: 17 },
+    { abduction: 134, ueAbduction: 2, adduction: -134, ueAdduction: 15, ankylosis: 134, ueAnkylosis: 17 },
+    { abduction: 133, ueAbduction: 2, adduction: -133, ueAdduction: 15, ankylosis: 133, ueAnkylosis: 17 },
+    { abduction: 132, ueAbduction: 2, adduction: -132, ueAdduction: 15, ankylosis: 132, ueAnkylosis: 17 },
+    { abduction: 131, ueAbduction: 2, adduction: -131, ueAdduction: 15, ankylosis: 131, ueAnkylosis: 17 },
+    { abduction: 130, ueAbduction: 2, adduction: -130, ueAdduction: 15, ankylosis: 130, ueAnkylosis: 17 },
+    { abduction: 129, ueAbduction: 2, adduction: -129, ueAdduction: 15, ankylosis: 129, ueAnkylosis: 17 },
+    { abduction: 128, ueAbduction: 2, adduction: -128, ueAdduction: 15, ankylosis: 128, ueAnkylosis: 17 },
+    { abduction: 127, ueAbduction: 2, adduction: -127, ueAdduction: 15, ankylosis: 127, ueAnkylosis: 17 },
+    { abduction: 126, ueAbduction: 2, adduction: -126, ueAdduction: 15, ankylosis: 126, ueAnkylosis: 17 },
+    { abduction: 125, ueAbduction: 3, adduction: -125, ueAdduction: 15, ankylosis: 125, ueAnkylosis: 17 },
+    { abduction: 124, ueAbduction: 3, adduction: -124, ueAdduction: 14, ankylosis: 124, ueAnkylosis: 17 },
+    { abduction: 123, ueAbduction: 3, adduction: -123, ueAdduction: 14, ankylosis: 123, ueAnkylosis: 17 },
+    { abduction: 122, ueAbduction: 3, adduction: -122, ueAdduction: 14, ankylosis: 122, ueAnkylosis: 17 },
+    { abduction: 121, ueAbduction: 3, adduction: -121, ueAdduction: 14, ankylosis: 121, ueAnkylosis: 17 },
+    { abduction: 120, ueAbduction: 3, adduction: -120, ueAdduction: 14, ankylosis: 120, ueAnkylosis: 17 },
+    { abduction: 119, ueAbduction: 3, adduction: -119, ueAdduction: 14, ankylosis: 119, ueAnkylosis: 17 },
+    { abduction: 118, ueAbduction: 3, adduction: -118, ueAdduction: 14, ankylosis: 118, ueAnkylosis: 17 },
+    { abduction: 117, ueAbduction: 3, adduction: -117, ueAdduction: 14, ankylosis: 117, ueAnkylosis: 17 },
+    { abduction: 116, ueAbduction: 3, adduction: -116, ueAdduction: 14, ankylosis: 116, ueAnkylosis: 17 },
+    { abduction: 115, ueAbduction: 3, adduction: -115, ueAdduction: 14, ankylosis: 115, ueAnkylosis: 17 },
+    { abduction: 114, ueAbduction: 3, adduction: -114, ueAdduction: 13, ankylosis: 114, ueAnkylosis: 16 },
+    { abduction: 113, ueAbduction: 3, adduction: -113, ueAdduction: 13, ankylosis: 113, ueAnkylosis: 16 },
+    { abduction: 112, ueAbduction: 3, adduction: -112, ueAdduction: 13, ankylosis: 112, ueAnkylosis: 16 },
+    { abduction: 111, ueAbduction: 3, adduction: -111, ueAdduction: 13, ankylosis: 111, ueAnkylosis: 16 },
+    { abduction: 110, ueAbduction: 3, adduction: -110, ueAdduction: 13, ankylosis: 110, ueAnkylosis: 16 },
+    { abduction: 109, ueAbduction: 3, adduction: -109, ueAdduction: 13, ankylosis: 109, ueAnkylosis: 16 },
+    { abduction: 108, ueAbduction: 3, adduction: -108, ueAdduction: 13, ankylosis: 108, ueAnkylosis: 16 },
+    { abduction: 107, ueAbduction: 3, adduction: -107, ueAdduction: 13, ankylosis: 107, ueAnkylosis: 16 },
+    { abduction: 106, ueAbduction: 3, adduction: -106, ueAdduction: 13, ankylosis: 106, ueAnkylosis: 16 },
+    { abduction: 105, ueAbduction: 4, adduction: -105, ueAdduction: 13, ankylosis: 105, ueAnkylosis: 16 },
+    { abduction: 104, ueAbduction: 4, adduction: -104, ueAdduction: 12, ankylosis: 104, ueAnkylosis: 16 },
+    { abduction: 103, ueAbduction: 4, adduction: -103, ueAdduction: 12, ankylosis: 103, ueAnkylosis: 16 },
+    { abduction: 102, ueAbduction: 4, adduction: -102, ueAdduction: 12, ankylosis: 102, ueAnkylosis: 16 },
+    { abduction: 101, ueAbduction: 4, adduction: -101, ueAdduction: 12, ankylosis: 101, ueAnkylosis: 16 },
+    { abduction: 100, ueAbduction: 4, adduction: -100, ueAdduction: 12, ankylosis: 100, ueAnkylosis: 16 },
+    { abduction: 99, ueAbduction: 4, adduction: -99, ueAdduction: 12, ankylosis: 99, ueAnkylosis: 16 },
+    { abduction: 98, ueAbduction: 4, adduction: -98, ueAdduction: 12, ankylosis: 98, ueAnkylosis: 16 },
+    { abduction: 97, ueAbduction: 4, adduction: -97, ueAdduction: 12, ankylosis: 97, ueAnkylosis: 16 },
+    { abduction: 96, ueAbduction: 4, adduction: -96, ueAdduction: 12, ankylosis: 96, ueAnkylosis: 16 },
+    { abduction: 95, ueAbduction: 4, adduction: -95, ueAdduction: 12, ankylosis: 95, ueAnkylosis: 16 },
+    { abduction: 94, ueAbduction: 4, adduction: -94, ueAdduction: 12, ankylosis: 94, ueAnkylosis: 16 },
+    { abduction: 93, ueAbduction: 4, adduction: -93, ueAdduction: 12, ankylosis: 93, ueAnkylosis: 16 },
+    { abduction: 92, ueAbduction: 4, adduction: -92, ueAdduction: 12, ankylosis: 92, ueAnkylosis: 16 },
+    { abduction: 91, ueAbduction: 4, adduction: -91, ueAdduction: 12, ankylosis: 91, ueAnkylosis: 16 },
+    { abduction: 90, ueAbduction: 4, adduction: -90, ueAdduction: 12, ankylosis: 90, ueAnkylosis: 16 },
+    { abduction: 89, ueAbduction: 4, adduction: -89, ueAdduction: 12, ankylosis: 89, ueAnkylosis: 16 },
+    { abduction: 88, ueAbduction: 4, adduction: -88, ueAdduction: 11, ankylosis: 88, ueAnkylosis: 16 },
+    { abduction: 87, ueAbduction: 4, adduction: -87, ueAdduction: 11, ankylosis: 87, ueAnkylosis: 15 },
+    { abduction: 86, ueAbduction: 4, adduction: -86, ueAdduction: 11, ankylosis: 86, ueAnkylosis: 15 },
+    { abduction: 85, ueAbduction: 5, adduction: -85, ueAdduction: 11, ankylosis: 85, ueAnkylosis: 15 },
+    { abduction: 84, ueAbduction: 5, adduction: -84, ueAdduction: 10, ankylosis: 84, ueAnkylosis: 15 },
+    { abduction: 83, ueAbduction: 5, adduction: -83, ueAdduction: 10, ankylosis: 83, ueAnkylosis: 15 },
+    { abduction: 82, ueAbduction: 5, adduction: -82, ueAdduction: 10, ankylosis: 82, ueAnkylosis: 14 },
+    { abduction: 81, ueAbduction: 5, adduction: -81, ueAdduction: 9, ankylosis: 81, ueAnkylosis: 14 },
+    { abduction: 80, ueAbduction: 5, adduction: -80, ueAdduction: 9, ankylosis: 80, ueAnkylosis: 14 },
+    { abduction: 79, ueAbduction: 5, adduction: -79, ueAdduction: 9, ankylosis: 79, ueAnkylosis: 14 },
+    { abduction: 78, ueAbduction: 5, adduction: -78, ueAdduction: 9, ankylosis: 78, ueAnkylosis: 14 },
+    { abduction: 77, ueAbduction: 5, adduction: -77, ueAdduction: 8, ankylosis: 77, ueAnkylosis: 13 },
+    { abduction: 76, ueAbduction: 5, adduction: -76, ueAdduction: 8, ankylosis: 76, ueAnkylosis: 13 },
+    { abduction: 75, ueAbduction: 5, adduction: -75, ueAdduction: 8, ankylosis: 75, ueAnkylosis: 13 },
+    { abduction: 74, ueAbduction: 5, adduction: -74, ueAdduction: 8, ankylosis: 74, ueAnkylosis: 13 },
+    { abduction: 73, ueAbduction: 5, adduction: -73, ueAdduction: 8, ankylosis: 73, ueAnkylosis: 13 },
+    { abduction: 72, ueAbduction: 5, adduction: -72, ueAdduction: 7, ankylosis: 72, ueAnkylosis: 12 },
+    { abduction: 71, ueAbduction: 5, adduction: -71, ueAdduction: 7, ankylosis: 71, ueAnkylosis: 12 },
+    { abduction: 70, ueAbduction: 5, adduction: -70, ueAdduction: 7, ankylosis: 70, ueAnkylosis: 12 },
+    { abduction: 69, ueAbduction: 5, adduction: -69, ueAdduction: 7, ankylosis: 69, ueAnkylosis: 12 },
+    { abduction: 68, ueAbduction: 5, adduction: -68, ueAdduction: 7, ankylosis: 68, ueAnkylosis: 12 },
+    { abduction: 67, ueAbduction: 5, adduction: -67, ueAdduction: 6, ankylosis: 67, ueAnkylosis: 12 },
+    { abduction: 66, ueAbduction: 5, adduction: -66, ueAdduction: 6, ankylosis: 66, ueAnkylosis: 12 },
+    { abduction: 65, ueAbduction: 6, adduction: -65, ueAdduction: 6, ankylosis: 65, ueAnkylosis: 12 },
+    { abduction: 64, ueAbduction: 6, adduction: -64, ueAdduction: 6, ankylosis: 64, ueAnkylosis: 11 },
+    { abduction: 63, ueAbduction: 6, adduction: -63, ueAdduction: 6, ankylosis: 63, ueAnkylosis: 11 },
+    { abduction: 62, ueAbduction: 6, adduction: -62, ueAdduction: 5, ankylosis: 62, ueAnkylosis: 11 },
+    { abduction: 61, ueAbduction: 6, adduction: -61, ueAdduction: 5, ankylosis: 61, ueAnkylosis: 11 },
+    { abduction: 60, ueAbduction: 6, adduction: -60, ueAdduction: 5, ankylosis: 60, ueAnkylosis: 11 },
+    { abduction: 59, ueAbduction: 6, adduction: -59, ueAdduction: 5, ankylosis: 59, ueAnkylosis: 11 },
+    { abduction: 58, ueAbduction: 6, adduction: -58, ueAdduction: 5, ankylosis: 58, ueAnkylosis: 11 },
+    { abduction: 57, ueAbduction: 6, adduction: -57, ueAdduction: 4, ankylosis: 57, ueAnkylosis: 10 },
+    { abduction: 56, ueAbduction: 6, adduction: -56, ueAdduction: 4, ankylosis: 56, ueAnkylosis: 10 },
+    { abduction: 55, ueAbduction: 6, adduction: -55, ueAdduction: 4, ankylosis: 55, ueAnkylosis: 10 },
+    { abduction: 54, ueAbduction: 6, adduction: -54, ueAdduction: 4, ankylosis: 54, ueAnkylosis: 10 },
+    { abduction: 53, ueAbduction: 6, adduction: -53, ueAdduction: 4, ankylosis: 53, ueAnkylosis: 10 },
+    { abduction: 52, ueAbduction: 6, adduction: -52, ueAdduction: 3, ankylosis: 52, ueAnkylosis: 9 },
+    { abduction: 51, ueAbduction: 6, adduction: -51, ueAdduction: 3, ankylosis: 51, ueAnkylosis: 9 },
+    { abduction: 50, ueAbduction: 6, adduction: -50, ueAdduction: 3, ankylosis: 50, ueAnkylosis: 9 },
+    { abduction: 49, ueAbduction: 6, adduction: -49, ueAdduction: 3, ankylosis: 49, ueAnkylosis: 9 },
+    { abduction: 48, ueAbduction: 6, adduction: -48, ueAdduction: 3, ankylosis: 48, ueAnkylosis: 9 },
+    { abduction: 47, ueAbduction: 6, adduction: -47, ueAdduction: 3, ankylosis: 47, ueAnkylosis: 9 },
+    { abduction: 46, ueAbduction: 6, adduction: -46, ueAdduction: 3, ankylosis: 46, ueAnkylosis: 9 },
+    { abduction: 45, ueAbduction: 6, adduction: -45, ueAdduction: 3, ankylosis: 45, ueAnkylosis: 9 },
+    { abduction: 44, ueAbduction: 6, adduction: -44, ueAdduction: 3, ankylosis: 44, ueAnkylosis: 9 },
+    { abduction: 43, ueAbduction: 6, adduction: -43, ueAdduction: 3, ankylosis: 43, ueAnkylosis: 9 },
+    { abduction: 42, ueAbduction: 6, adduction: -42, ueAdduction: 3, ankylosis: 42, ueAnkylosis: 9 },
+    { abduction: 41, ueAbduction: 6, adduction: -41, ueAdduction: 3, ankylosis: 41, ueAnkylosis: 9 },
+    { abduction: 40, ueAbduction: 6, adduction: -40, ueAdduction: 3, ankylosis: 40, ueAnkylosis: 9 },
+    { abduction: 39, ueAbduction: 6, adduction: -39, ueAdduction: 3, ankylosis: 39, ueAnkylosis: 9 },
+    { abduction: 38, ueAbduction: 6, adduction: -38, ueAdduction: 3, ankylosis: 38, ueAnkylosis: 9 },
+    { abduction: 37, ueAbduction: 6, adduction: -37, ueAdduction: 3, ankylosis: 37, ueAnkylosis: 9 },
+    { abduction: 36, ueAbduction: 6, adduction: -36, ueAdduction: 3, ankylosis: 36, ueAnkylosis: 9 },
+    { abduction: 35, ueAbduction: 7, adduction: -35, ueAdduction: 3, ankylosis: 35, ueAnkylosis: 9 },
+    { abduction: 34, ueAbduction: 7, adduction: -34, ueAdduction: 2, ankylosis: 34, ueAnkylosis: 9 },
+    { abduction: 33, ueAbduction: 7, adduction: -33, ueAdduction: 2, ankylosis: 33, ueAnkylosis: 9 },
+    { abduction: 32, ueAbduction: 7, adduction: -32, ueAdduction: 2, ankylosis: 32, ueAnkylosis: 9 },
+    { abduction: 31, ueAbduction: 7, adduction: -31, ueAdduction: 2, ankylosis: 31, ueAnkylosis: 9 },
+    { abduction: 30, ueAbduction: 7, adduction: -30, ueAdduction: 2, ankylosis: 30, ueAnkylosis: 9 },
+    { abduction: 29, ueAbduction: 7, adduction: -29, ueAdduction: 2, ankylosis: 29, ueAnkylosis: 9 },
+    { abduction: 28, ueAbduction: 7, adduction: -28, ueAdduction: 2, ankylosis: 28, ueAnkylosis: 9 },
+    { abduction: 27, ueAbduction: 7, adduction: -27, ueAdduction: 2, ankylosis: 27, ueAnkylosis: 9 },
+    { abduction: 26, ueAbduction: 7, adduction: -26, ueAdduction: 2, ankylosis: 26, ueAnkylosis: 9 },
+    { abduction: 25, ueAbduction: 7, adduction: -25, ueAdduction: 2, ankylosis: 25, ueAnkylosis: 9 },
+    { abduction: 24, ueAbduction: 7, adduction: -24, ueAdduction: 2, ankylosis: 24, ueAnkylosis: 9 },
+    { abduction: 23, ueAbduction: 7, adduction: -23, ueAdduction: 2, ankylosis: 23, ueAnkylosis: 9 },
+    { abduction: 22, ueAbduction: 7, adduction: -22, ueAdduction: 2, ankylosis: 22, ueAnkylosis: 9 },
+    { abduction: 21, ueAbduction: 7, adduction: -21, ueAdduction: 2, ankylosis: 21, ueAnkylosis: 9 },
+    { abduction: 20, ueAbduction: 7, adduction: -20, ueAdduction: 2, ankylosis: 20, ueAnkylosis: 9 },
+    { abduction: 19, ueAbduction: 7, adduction: -19, ueAdduction: 2, ankylosis: 19, ueAnkylosis: 9 },
+    { abduction: 18, ueAbduction: 8, adduction: -18, ueAdduction: 2, ankylosis: 18, ueAnkylosis: 10 },
+    { abduction: 17, ueAbduction: 8, adduction: -17, ueAdduction: 2, ankylosis: 17, ueAnkylosis: 10 },
+    { abduction: 16, ueAbduction: 8, adduction: -16, ueAdduction: 2, ankylosis: 16, ueAnkylosis: 10 },
+    { abduction: 15, ueAbduction: 9, adduction: -15, ueAdduction: 2, ankylosis: 15, ueAnkylosis: 11 },
+    { abduction: 14, ueAbduction: 9, adduction: -14, ueAdduction: 2, ankylosis: 14, ueAnkylosis: 11 },
+    { abduction: 13, ueAbduction: 9, adduction: -13, ueAdduction: 2, ankylosis: 13, ueAnkylosis: 11 },
+    { abduction: 12, ueAbduction: 9, adduction: -12, ueAdduction: 2, ankylosis: 12, ueAnkylosis: 11 },
+    { abduction: 11, ueAbduction: 10, adduction: -11, ueAdduction: 2, ankylosis: 11, ueAnkylosis: 12 },
+    { abduction: 10, ueAbduction: 10, adduction: -10, ueAdduction: 2, ankylosis: 10, ueAnkylosis: 12 },
+    { abduction: 9, ueAbduction: 10, adduction: -9, ueAdduction: 2, ankylosis: 9, ueAnkylosis: 12 },
+    { abduction: 8, ueAbduction: 10, adduction: -8, ueAdduction: 2, ankylosis: 8, ueAnkylosis: 12 },
+    { abduction: 7, ueAbduction: 11, adduction: -7, ueAdduction: 2, ankylosis: 7, ueAnkylosis: 13 },
+    { abduction: 6, ueAbduction: 11, adduction: -6, ueAdduction: 2, ankylosis: 6, ueAnkylosis: 13 },
+    { abduction: 5, ueAbduction: 11, adduction: -5, ueAdduction: 2, ankylosis: 5, ueAnkylosis: 13 },
+    { abduction: 4, ueAbduction: 11, adduction: -4, ueAdduction: 2, ankylosis: 4, ueAnkylosis: 13 },
+    { abduction: 3, ueAbduction: 11, adduction: -3, ueAdduction: 2, ankylosis: 3, ueAnkylosis: 13 },
+    { abduction: 2, ueAbduction: 12, adduction: -2, ueAdduction: 2, ankylosis: 2, ueAnkylosis: 14 },
+    { abduction: 1, ueAbduction: 12, adduction: -1, ueAdduction: 2, ankylosis: 1, ueAnkylosis: 14 },
+    { abduction: 0, ueAbduction: 12, adduction: 0, ueAdduction: 2, ankylosis: 0, ueAnkylosis: 14 },
+    { abduction: -1, ueAbduction: 12, adduction: 1, ueAdduction: 2, ankylosis: -1, ueAnkylosis: 14 },
+    { abduction: -2, ueAbduction: 12, adduction: 2, ueAdduction: 2, ankylosis: -2, ueAnkylosis: 14 },
+    { abduction: -3, ueAbduction: 13, adduction: 3, ueAdduction: 2, ankylosis: -3, ueAnkylosis: 14 },
+    { abduction: -4, ueAbduction: 13, adduction: 4, ueAdduction: 2, ankylosis: -4, ueAnkylosis: 15 },
+    { abduction: -5, ueAbduction: 13, adduction: 5, ueAdduction: 2, ankylosis: -5, ueAnkylosis: 15 },
+    { abduction: -6, ueAbduction: 13, adduction: 6, ueAdduction: 1, ankylosis: -6, ueAnkylosis: 15 },
+    { abduction: -7, ueAbduction: 13, adduction: 7, ueAdduction: 1, ankylosis: -7, ueAnkylosis: 15 },
+    { abduction: -8, ueAbduction: 14, adduction: 8, ueAdduction: 1, ankylosis: -8, ueAnkylosis: 15 },
+    { abduction: -9, ueAbduction: 14, adduction: 9, ueAdduction: 1, ankylosis: -9, ueAnkylosis: 15 },
+    { abduction: -10, ueAbduction: 14, adduction: 10, ueAdduction: 1, ankylosis: -8, ueAnkylosis: 15 },
+    { abduction: -11, ueAbduction: 14, adduction: 11, ueAdduction: 1, ankylosis: -11, ueAnkylosis: 15 },
+    { abduction: -12, ueAbduction: 14, adduction: 12, ueAdduction: 1, ankylosis: -12, ueAnkylosis: 15 },
+    { abduction: -13, ueAbduction: 14, adduction: 13, ueAdduction: 1, ankylosis: -13, ueAnkylosis: 15 },
+    { abduction: -14, ueAbduction: 14, adduction: 14, ueAdduction: 1, ankylosis: -14, ueAnkylosis: 16 },
+    { abduction: -15, ueAbduction: 15, adduction: 15, ueAdduction: 1, ankylosis: -15, ueAnkylosis: 16 },
+    { abduction: -16, ueAbduction: 15, adduction: 16, ueAdduction: 1, ankylosis: -16, ueAnkylosis: 16 },
+    { abduction: -17, ueAbduction: 15, adduction: 17, ueAdduction: 1, ankylosis: -17, ueAnkylosis: 16 },
+    { abduction: -18, ueAbduction: 15, adduction: 18, ueAdduction: 1, ankylosis: -18, ueAnkylosis: 16 },
+    { abduction: -19, ueAbduction: 15, adduction: 19, ueAdduction: 1, ankylosis: -19, ueAnkylosis: 16 },
+    { abduction: -20, ueAbduction: 15, adduction: 20, ueAdduction: 1, ankylosis: -20, ueAnkylosis: 16 },
+    { abduction: -21, ueAbduction: 15, adduction: 21, ueAdduction: 1, ankylosis: -21, ueAnkylosis: 16 },
+    { abduction: -22, ueAbduction: 15, adduction: 22, ueAdduction: 1, ankylosis: -22, ueAnkylosis: 16 },
+    { abduction: -23, ueAbduction: 15, adduction: 23, ueAdduction: 1, ankylosis: -23, ueAnkylosis: 16 },
+    { abduction: -24, ueAbduction: 15, adduction: 24, ueAdduction: 1, ankylosis: -24, ueAnkylosis: 16 },
+    { abduction: -25, ueAbduction: 16, adduction: 25, ueAdduction: 1, ankylosis: -25, ueAnkylosis: 17 },
+    { abduction: -26, ueAbduction: 16, adduction: 26, ueAdduction: 1, ankylosis: -26, ueAnkylosis: 17 },
+    { abduction: -27, ueAbduction: 16, adduction: 27, ueAdduction: 1, ankylosis: -27, ueAnkylosis: 17 },
+    { abduction: -28, ueAbduction: 16, adduction: 28, ueAdduction: 1, ankylosis: -28, ueAnkylosis: 17 },
+    { abduction: -29, ueAbduction: 16, adduction: 29, ueAdduction: 1, ankylosis: -29, ueAnkylosis: 17 },
+    { abduction: -30, ueAbduction: 16, adduction: 30, ueAdduction: 1, ankylosis: -30, ueAnkylosis: 17 },
+    { abduction: -31, ueAbduction: 16, adduction: 31, ueAdduction: 1, ankylosis: -31, ueAnkylosis: 17 },
+    { abduction: -32, ueAbduction: 16, adduction: 32, ueAdduction: 1, ankylosis: -32, ueAnkylosis: 17 },
+    { abduction: -33, ueAbduction: 16, adduction: 33, ueAdduction: 1, ankylosis: -33, ueAnkylosis: 17 },
+    { abduction: -34, ueAbduction: 16, adduction: 34, ueAdduction: 1, ankylosis: -34, ueAnkylosis: 17 },
+    { abduction: -35, ueAbduction: 17, adduction: 35, ueAdduction: 1, ankylosis: -35, ueAnkylosis: 17 },
+    { abduction: -36, ueAbduction: 17, adduction: 36, ueAdduction: 0, ankylosis: -36, ueAnkylosis: 17 },
+    { abduction: -37, ueAbduction: 17, adduction: 37, ueAdduction: 0, ankylosis: -37, ueAnkylosis: 17 },
+    { abduction: -38, ueAbduction: 17, adduction: 38, ueAdduction: 0, ankylosis: -38, ueAnkylosis: 17 },
+    { abduction: -39, ueAbduction: 17, adduction: 39, ueAdduction: 0, ankylosis: -39, ueAnkylosis: 17 },
+    { abduction: -40, ueAbduction: 17, adduction: 40, ueAdduction: 0, ankylosis: -40, ueAnkylosis: 17 },
+    { abduction: -41, ueAbduction: 17, adduction: 41, ueAdduction: 0, ankylosis: -41, ueAnkylosis: 17 },
+    { abduction: -42, ueAbduction: 17, adduction: 42, ueAdduction: 0, ankylosis: -42, ueAnkylosis: 17 },
+    { abduction: -43, ueAbduction: 17, adduction: 43, ueAdduction: 0, ankylosis: -43, ueAnkylosis: 17 },
+    { abduction: -44, ueAbduction: 17, adduction: 44, ueAdduction: 0, ankylosis: -44, ueAnkylosis: 17 },
+    { abduction: -45, ueAbduction: 18, adduction: 45, ueAdduction: 0, ankylosis: -45, ueAnkylosis: 18 },
+    { abduction: -46, ueAbduction: 18, adduction: 46, ueAdduction: 0, ankylosis: -46, ueAnkylosis: 18 },
+    { abduction: -47, ueAbduction: 18, adduction: 47, ueAdduction: 0, ankylosis: -47, ueAnkylosis: 18 },
+    { abduction: -48, ueAbduction: 18, adduction: 48, ueAdduction: 0, ankylosis: -48, ueAnkylosis: 18 },
+    { abduction: -49, ueAbduction: 18, adduction: 49, ueAdduction: 0, ankylosis: -49, ueAnkylosis: 18 },
+    { abduction: -50, ueAbduction: 18, adduction: 50, ueAdduction: 0, ankylosis: -50, ueAnkylosis: 18 },
+    { abduction: '<-50', ueAbduction: 18, adduction: '>50', ueAdduction: 0, ankylosis: '<-50', ueAnkylosis: 18 }
+];
+
+// Shoulder Joint Internal & External Rotation data
+const SHOULDERInternalExternalRotationData = [
+    { internalRotation: '>90', ueInternalRotation: 0, externalRotation: '<-90', ueExternalRotation: 12, ankylosis: '>90', ueAnkylosis: 12 },
+    { internalRotation: 90, ueInternalRotation: 0, externalRotation: -90, ueExternalRotation: 12, ankylosis: 90, ueAnkylosis: 12 },
+    { internalRotation: 89, ueInternalRotation: 0, externalRotation: -89, ueExternalRotation: 12, ankylosis: 89, ueAnkylosis: 12 },
+    { internalRotation: 88, ueInternalRotation: 0, externalRotation: -88, ueExternalRotation: 12, ankylosis: 88, ueAnkylosis: 12 },
+    { internalRotation: 87, ueInternalRotation: 0, externalRotation: -87, ueExternalRotation: 11, ankylosis: 87, ueAnkylosis: 11 },
+    { internalRotation: 86, ueInternalRotation: 0, externalRotation: -86, ueExternalRotation: 11, ankylosis: 86, ueAnkylosis: 11 },
+    { internalRotation: 85, ueInternalRotation: 0, externalRotation: -85, ueExternalRotation: 11, ankylosis: 85, ueAnkylosis: 11 },
+    { internalRotation: 84, ueInternalRotation: 0, externalRotation: -84, ueExternalRotation: 11, ankylosis: 84, ueAnkylosis: 11 },
+    { internalRotation: 83, ueInternalRotation: 0, externalRotation: -83, ueExternalRotation: 11, ankylosis: 83, ueAnkylosis: 11 },
+    { internalRotation: 82, ueInternalRotation: 0, externalRotation: -82, ueExternalRotation: 10, ankylosis: 82, ueAnkylosis: 10 },
+    { internalRotation: 81, ueInternalRotation: 0, externalRotation: -81, ueExternalRotation: 10, ankylosis: 81, ueAnkylosis: 10 },
+    { internalRotation: 80, ueInternalRotation: 0, externalRotation: -80, ueExternalRotation: 10, ankylosis: 80, ueAnkylosis: 10 },
+    { internalRotation: 79, ueInternalRotation: 0, externalRotation: -79, ueExternalRotation: 10, ankylosis: 79, ueAnkylosis: 10 },
+    { internalRotation: 78, ueInternalRotation: 0, externalRotation: -78, ueExternalRotation: 10, ankylosis: 78, ueAnkylosis: 10 },
+    { internalRotation: 77, ueInternalRotation: 0, externalRotation: -77, ueExternalRotation: 9, ankylosis: 77, ueAnkylosis: 10 },
+    { internalRotation: 76, ueInternalRotation: 0, externalRotation: -76, ueExternalRotation: 9, ankylosis: 76, ueAnkylosis: 10 },
+    { internalRotation: 75, ueInternalRotation: 1, externalRotation: -75, ueExternalRotation: 9, ankylosis: 75, ueAnkylosis: 10 },
+    { internalRotation: 74, ueInternalRotation: 1, externalRotation: -74, ueExternalRotation: 9, ankylosis: 74, ueAnkylosis: 9 },
+    { internalRotation: 73, ueInternalRotation: 1, externalRotation: -73, ueExternalRotation: 9, ankylosis: 73, ueAnkylosis: 9 },
+    { internalRotation: 72, ueInternalRotation: 1, externalRotation: -72, ueExternalRotation: 8, ankylosis: 72, ueAnkylosis: 9 },
+    { internalRotation: 71, ueInternalRotation: 1, externalRotation: -71, ueExternalRotation: 8, ankylosis: 71, ueAnkylosis: 9 },
+    { internalRotation: 70, ueInternalRotation: 1, externalRotation: -70, ueExternalRotation: 8, ankylosis: 70, ueAnkylosis: 9 },
+    { internalRotation: 69, ueInternalRotation: 1, externalRotation: -69, ueExternalRotation: 8, ankylosis: 69, ueAnkylosis: 9 },
+    { internalRotation: 68, ueInternalRotation: 1, externalRotation: -68, ueExternalRotation: 7, ankylosis: 68, ueAnkylosis: 9 },
+    { internalRotation: 67, ueInternalRotation: 1, externalRotation: -67, ueExternalRotation: 7, ankylosis: 67, ueAnkylosis: 8 },
+    { internalRotation: 66, ueInternalRotation: 1, externalRotation: -66, ueExternalRotation: 7, ankylosis: 66, ueAnkylosis: 8 },
+    { internalRotation: 65, ueInternalRotation: 2, externalRotation: -65, ueExternalRotation: 7, ankylosis: 65, ueAnkylosis: 8 },
+    { internalRotation: 64, ueInternalRotation: 2, externalRotation: -64, ueExternalRotation: 6, ankylosis: 64, ueAnkylosis: 8 },
+    { internalRotation: 63, ueInternalRotation: 2, externalRotation: -63, ueExternalRotation: 6, ankylosis: 63, ueAnkylosis: 8 },
+    { internalRotation: 62, ueInternalRotation: 2, externalRotation: -62, ueExternalRotation: 6, ankylosis: 62, ueAnkylosis: 7 },
+    { internalRotation: 61, ueInternalRotation: 2, externalRotation: -61, ueExternalRotation: 5, ankylosis: 61, ueAnkylosis: 7 },
+    { internalRotation: 60, ueInternalRotation: 2, externalRotation: -60, ueExternalRotation: 5, ankylosis: 60, ueAnkylosis: 7 },
+    { internalRotation: 59, ueInternalRotation: 2, externalRotation: -59, ueExternalRotation: 5, ankylosis: 59, ueAnkylosis: 7 },
+    { internalRotation: 58, ueInternalRotation: 2, externalRotation: -58, ueExternalRotation: 5, ankylosis: 58, ueAnkylosis: 7 },
+    { internalRotation: 57, ueInternalRotation: 2, externalRotation: -57, ueExternalRotation: 5, ankylosis: 57, ueAnkylosis: 7 },
+    { internalRotation: 56, ueInternalRotation: 2, externalRotation: -56, ueExternalRotation: 5, ankylosis: 56, ueAnkylosis: 7 },
+    { internalRotation: 55, ueInternalRotation: 2, externalRotation: -55, ueExternalRotation: 5, ankylosis: 55, ueAnkylosis: 7 },
+    { internalRotation: 54, ueInternalRotation: 2, externalRotation: -54, ueExternalRotation: 4, ankylosis: 54, ueAnkylosis: 6 },
+    { internalRotation: 53, ueInternalRotation: 2, externalRotation: -53, ueExternalRotation: 4, ankylosis: 53, ueAnkylosis: 6 },
+    { internalRotation: 52, ueInternalRotation: 2, externalRotation: -52, ueExternalRotation: 4, ankylosis: 52, ueAnkylosis: 6 },
+    { internalRotation: 51, ueInternalRotation: 2, externalRotation: -51, ueExternalRotation: 4, ankylosis: 51, ueAnkylosis: 6 },
+    { internalRotation: 50, ueInternalRotation: 2, externalRotation: -50, ueExternalRotation: 4, ankylosis: 50, ueAnkylosis: 6 },
+    { internalRotation: 49, ueInternalRotation: 2, externalRotation: -49, ueExternalRotation: 4, ankylosis: 49, ueAnkylosis: 6 },
+    { internalRotation: 48, ueInternalRotation: 2, externalRotation: -48, ueExternalRotation: 4, ankylosis: 48, ueAnkylosis: 6 },
+    { internalRotation: 47, ueInternalRotation: 2, externalRotation: -47, ueExternalRotation: 4, ankylosis: 47, ueAnkylosis: 6 },
+    { internalRotation: 46, ueInternalRotation: 2, externalRotation: -46, ueExternalRotation: 4, ankylosis: 46, ueAnkylosis: 6 },
+    { internalRotation: 45, ueInternalRotation: 3, externalRotation: -45, ueExternalRotation: 4, ankylosis: 45, ueAnkylosis: 6 },
+    { internalRotation: 44, ueInternalRotation: 3, externalRotation: -44, ueExternalRotation: 3, ankylosis: 44, ueAnkylosis: 6 },
+    { internalRotation: 43, ueInternalRotation: 3, externalRotation: -43, ueExternalRotation: 3, ankylosis: 43, ueAnkylosis: 6 },
+    { internalRotation: 42, ueInternalRotation: 3, externalRotation: -42, ueExternalRotation: 3, ankylosis: 42, ueAnkylosis: 6 },
+    { internalRotation: 41, ueInternalRotation: 3, externalRotation: -41, ueExternalRotation: 3, ankylosis: 41, ueAnkylosis: 6 },
+    { internalRotation: 40, ueInternalRotation: 3, externalRotation: -40, ueExternalRotation: 3, ankylosis: 40, ueAnkylosis: 6 },
+    { internalRotation: 39, ueInternalRotation: 3, externalRotation: -39, ueExternalRotation: 3, ankylosis: 39, ueAnkylosis: 6 },
+    { internalRotation: 38, ueInternalRotation: 3, externalRotation: -38, ueExternalRotation: 3, ankylosis: 38, ueAnkylosis: 6 },
+    { internalRotation: 37, ueInternalRotation: 3, externalRotation: -37, ueExternalRotation: 3, ankylosis: 37, ueAnkylosis: 6 },
+    { internalRotation: 36, ueInternalRotation: 3, externalRotation: -36, ueExternalRotation: 3, ankylosis: 36, ueAnkylosis: 6 },
+    { internalRotation: 35, ueInternalRotation: 4, externalRotation: -35, ueExternalRotation: 3, ankylosis: 35, ueAnkylosis: 6 },
+    { internalRotation: 34, ueInternalRotation: 4, externalRotation: -34, ueExternalRotation: 2, ankylosis: 34, ueAnkylosis: 6 },
+    { internalRotation: 33, ueInternalRotation: 4, externalRotation: -33, ueExternalRotation: 2, ankylosis: 33, ueAnkylosis: 6 },
+    { internalRotation: 32, ueInternalRotation: 4, externalRotation: -32, ueExternalRotation: 2, ankylosis: 32, ueAnkylosis: 6 },
+    { internalRotation: 31, ueInternalRotation: 4, externalRotation: -31, ueExternalRotation: 2, ankylosis: 31, ueAnkylosis: 6 },
+    { internalRotation: 30, ueInternalRotation: 4, externalRotation: -30, ueExternalRotation: 2, ankylosis: 30, ueAnkylosis: 6 },
+    { internalRotation: 29, ueInternalRotation: 4, externalRotation: -29, ueExternalRotation: 2, ankylosis: 29, ueAnkylosis: 6 },
+    { internalRotation: 28, ueInternalRotation: 4, externalRotation: -28, ueExternalRotation: 2, ankylosis: 28, ueAnkylosis: 6 },
+    { internalRotation: 27, ueInternalRotation: 4, externalRotation: -27, ueExternalRotation: 2, ankylosis: 27, ueAnkylosis: 6 },
+    { internalRotation: 26, ueInternalRotation: 4, externalRotation: -26, ueExternalRotation: 2, ankylosis: 26, ueAnkylosis: 6 },
+    { internalRotation: 25, ueInternalRotation: 4, externalRotation: -25, ueExternalRotation: 2, ankylosis: 25, ueAnkylosis: 6 },
+    { internalRotation: 24, ueInternalRotation: 4, externalRotation: -24, ueExternalRotation: 2, ankylosis: 24, ueAnkylosis: 6 },
+    { internalRotation: 23, ueInternalRotation: 4, externalRotation: -23, ueExternalRotation: 2, ankylosis: 23, ueAnkylosis: 6 },
+    { internalRotation: 22, ueInternalRotation: 4, externalRotation: -22, ueExternalRotation: 2, ankylosis: 22, ueAnkylosis: 6 },
+    { internalRotation: 21, ueInternalRotation: 4, externalRotation: -21, ueExternalRotation: 2, ankylosis: 21, ueAnkylosis: 6 },
+    { internalRotation: 20, ueInternalRotation: 4, externalRotation: -20, ueExternalRotation: 2, ankylosis: 20, ueAnkylosis: 6 },
+    { internalRotation: 19, ueInternalRotation: 4, externalRotation: -19, ueExternalRotation: 2, ankylosis: 19, ueAnkylosis: 6 },
+    { internalRotation: 18, ueInternalRotation: 4, externalRotation: -18, ueExternalRotation: 2, ankylosis: 18, ueAnkylosis: 6 },
+    { internalRotation: 17, ueInternalRotation: 4, externalRotation: -17, ueExternalRotation: 2, ankylosis: 17, ueAnkylosis: 6 },
+    { internalRotation: 16, ueInternalRotation: 4, externalRotation: -16, ueExternalRotation: 2, ankylosis: 16, ueAnkylosis: 6 },
+    { internalRotation: 15, ueInternalRotation: 5, externalRotation: -15, ueExternalRotation: 2, ankylosis: 15, ueAnkylosis: 7 },
+    { internalRotation: 14, ueInternalRotation: 5, externalRotation: -14, ueExternalRotation: 2, ankylosis: 14, ueAnkylosis: 7 },
+    { internalRotation: 13, ueInternalRotation: 5, externalRotation: -13, ueExternalRotation: 2, ankylosis: 13, ueAnkylosis: 7 },
+    { internalRotation: 12, ueInternalRotation: 5, externalRotation: -12, ueExternalRotation: 2, ankylosis: 12, ueAnkylosis: 7 },
+    { internalRotation: 11, ueInternalRotation: 5, externalRotation: -11, ueExternalRotation: 2, ankylosis: 11, ueAnkylosis: 7 },
+    { internalRotation: 10, ueInternalRotation: 5, externalRotation: -10, ueExternalRotation: 2, ankylosis: 10, ueAnkylosis: 7 },
+    { internalRotation: 9, ueInternalRotation: 5, externalRotation: -9, ueExternalRotation: 2, ankylosis: 9, ueAnkylosis: 7 },
+    { internalRotation: 8, ueInternalRotation: 5, externalRotation: -8, ueExternalRotation: 2, ankylosis: 8, ueAnkylosis: 7 },
+    { internalRotation: 7, ueInternalRotation: 5, externalRotation: -7, ueExternalRotation: 2, ankylosis: 7, ueAnkylosis: 7 },
+    { internalRotation: 6, ueInternalRotation: 5, externalRotation: -6, ueExternalRotation: 2, ankylosis: 6, ueAnkylosis: 7 },
+    { internalRotation: 5, ueInternalRotation: 5, externalRotation: -5, ueExternalRotation: 2, ankylosis: 5, ueAnkylosis: 7 },
+    { internalRotation: 4, ueInternalRotation: 5, externalRotation: -4, ueExternalRotation: 2, ankylosis: 4, ueAnkylosis: 7 },
+    { internalRotation: 3, ueInternalRotation: 5, externalRotation: -3, ueExternalRotation: 2, ankylosis: 3, ueAnkylosis: 7 },
+    { internalRotation: 2, ueInternalRotation: 5, externalRotation: -2, ueExternalRotation: 2, ankylosis: 2, ueAnkylosis: 7 },
+    { internalRotation: 1, ueInternalRotation: 5, externalRotation: -1, ueExternalRotation: 2, ankylosis: 1, ueAnkylosis: 7 },
+    { internalRotation: 0, ueInternalRotation: 5, externalRotation: 0, ueExternalRotation: 2, ankylosis: 0, ueAnkylosis: 7 },
+    { internalRotation: -1, ueInternalRotation: 5, externalRotation: 1, ueExternalRotation: 2, ankylosis: -1, ueAnkylosis: 7 },
+    { internalRotation: -2, ueInternalRotation: 5, externalRotation: 2, ueExternalRotation: 2, ankylosis: -2, ueAnkylosis: 7 },
+    { internalRotation: -3, ueInternalRotation: 5, externalRotation: 3, ueExternalRotation: 2, ankylosis: -3, ueAnkylosis: 7 },
+    { internalRotation: -4, ueInternalRotation: 5, externalRotation: 4, ueExternalRotation: 2, ankylosis: -4, ueAnkylosis: 7 },
+    { internalRotation: -5, ueInternalRotation: 6, externalRotation: 5, ueExternalRotation: 2, ankylosis: -5, ueAnkylosis: 8 },
+    { internalRotation: -6, ueInternalRotation: 6, externalRotation: 6, ueExternalRotation: 2, ankylosis: -6, ueAnkylosis: 8 },
+    { internalRotation: -7, ueInternalRotation: 6, externalRotation: 7, ueExternalRotation: 2, ankylosis: -7, ueAnkylosis: 8 },
+    { internalRotation: -8, ueInternalRotation: 6, externalRotation: 8, ueExternalRotation: 2, ankylosis: -8, ueAnkylosis: 8 },
+    { internalRotation: -9, ueInternalRotation: 6, externalRotation: 9, ueExternalRotation: 2, ankylosis: -9, ueAnkylosis: 8 },
+    { internalRotation: -10, ueInternalRotation: 6, externalRotation: 10, ueExternalRotation: 2, ankylosis: -10, ueAnkylosis: 8 },
+    { internalRotation: -11, ueInternalRotation: 6, externalRotation: 11, ueExternalRotation: 2, ankylosis: -11, ueAnkylosis: 8 },
+    { internalRotation: -12, ueInternalRotation: 6, externalRotation: 12, ueExternalRotation: 2, ankylosis: -12, ueAnkylosis: 8 },
+    { internalRotation: -13, ueInternalRotation: 6, externalRotation: 13, ueExternalRotation: 2, ankylosis: -13, ueAnkylosis: 8 },
+    { internalRotation: -14, ueInternalRotation: 6, externalRotation: 14, ueExternalRotation: 2, ankylosis: -14, ueAnkylosis: 8 },
+    { internalRotation: -15, ueInternalRotation: 7, externalRotation: 15, ueExternalRotation: 2, ankylosis: -15, ueAnkylosis: 8 },
+    { internalRotation: -16, ueInternalRotation: 7, externalRotation: 16, ueExternalRotation: 1, ankylosis: -16, ueAnkylosis: 8 },
+    { internalRotation: -17, ueInternalRotation: 7, externalRotation: 17, ueExternalRotation: 1, ankylosis: -17, ueAnkylosis: 8 },
+    { internalRotation: -18, ueInternalRotation: 7, externalRotation: 18, ueExternalRotation: 1, ankylosis: -18, ueAnkylosis: 8 },
+    { internalRotation: -19, ueInternalRotation: 7, externalRotation: 19, ueExternalRotation: 1, ankylosis: -19, ueAnkylosis: 8 },
+    { internalRotation: -20, ueInternalRotation: 7, externalRotation: 20, ueExternalRotation: 1, ankylosis: -20, ueAnkylosis: 8 },
+    { internalRotation: -21, ueInternalRotation: 7, externalRotation: 21, ueExternalRotation: 1, ankylosis: -21, ueAnkylosis: 8 },
+    { internalRotation: -22, ueInternalRotation: 7, externalRotation: 22, ueExternalRotation: 1, ankylosis: -22, ueAnkylosis: 8 },
+    { internalRotation: -23, ueInternalRotation: 7, externalRotation: 23, ueExternalRotation: 1, ankylosis: -23, ueAnkylosis: 8 },
+    { internalRotation: -24, ueInternalRotation: 7, externalRotation: 24, ueExternalRotation: 1, ankylosis: -24, ueAnkylosis: 8 },
+    { internalRotation: -25, ueInternalRotation: 8, externalRotation: 25, ueExternalRotation: 1, ankylosis: -25, ueAnkylosis: 9 },
+    { internalRotation: -26, ueInternalRotation: 8, externalRotation: 26, ueExternalRotation: 1, ankylosis: -26, ueAnkylosis: 9 },
+    { internalRotation: -27, ueInternalRotation: 8, externalRotation: 27, ueExternalRotation: 1, ankylosis: -27, ueAnkylosis: 9 },
+    { internalRotation: -28, ueInternalRotation: 8, externalRotation: 28, ueExternalRotation: 1, ankylosis: -28, ueAnkylosis: 9 },
+    { internalRotation: -29, ueInternalRotation: 8, externalRotation: 29, ueExternalRotation: 1, ankylosis: -29, ueAnkylosis: 9 },
+    { internalRotation: -30, ueInternalRotation: 8, externalRotation: 30, ueExternalRotation: 1, ankylosis: -30, ueAnkylosis: 9 },
+    { internalRotation: -31, ueInternalRotation: 8, externalRotation: 31, ueExternalRotation: 1, ankylosis: -31, ueAnkylosis: 9 },
+    { internalRotation: -32, ueInternalRotation: 8, externalRotation: 32, ueExternalRotation: 1, ankylosis: -32, ueAnkylosis: 9 },
+    { internalRotation: -33, ueInternalRotation: 8, externalRotation: 33, ueExternalRotation: 1, ankylosis: -33, ueAnkylosis: 9 },
+    { internalRotation: -34, ueInternalRotation: 8, externalRotation: 34, ueExternalRotation: 1, ankylosis: -34, ueAnkylosis: 9 },
+    { internalRotation: -35, ueInternalRotation: 8, externalRotation: 35, ueExternalRotation: 1, ankylosis: -35, ueAnkylosis: 9 },
+    { internalRotation: -36, ueInternalRotation: 8, externalRotation: 36, ueExternalRotation: 1, ankylosis: -36, ueAnkylosis: 9 },
+    { internalRotation: -37, ueInternalRotation: 8, externalRotation: 37, ueExternalRotation: 1, ankylosis: -37, ueAnkylosis: 9 },
+    { internalRotation: -38, ueInternalRotation: 8, externalRotation: 38, ueExternalRotation: 1, ankylosis: -38, ueAnkylosis: 9 },
+    { internalRotation: -39, ueInternalRotation: 8, externalRotation: 39, ueExternalRotation: 1, ankylosis: -39, ueAnkylosis: 9 },
+    { internalRotation: -40, ueInternalRotation: 8, externalRotation: 40, ueExternalRotation: 1, ankylosis: -40, ueAnkylosis: 9 },
+    { internalRotation: -41, ueInternalRotation: 8, externalRotation: 41, ueExternalRotation: 1, ankylosis: -41, ueAnkylosis: 9 },
+    { internalRotation: -42, ueInternalRotation: 8, externalRotation: 42, ueExternalRotation: 1, ankylosis: -42, ueAnkylosis: 9 },
+    { internalRotation: -43, ueInternalRotation: 8, externalRotation: 43, ueExternalRotation: 1, ankylosis: -43, ueAnkylosis: 9 },
+    { internalRotation: -44, ueInternalRotation: 8, externalRotation: 44, ueExternalRotation: 1, ankylosis: -44, ueAnkylosis: 9 },
+    { internalRotation: -45, ueInternalRotation: 9, externalRotation: 45, ueExternalRotation: 1, ankylosis: -45, ueAnkylosis: 10 },
+    { internalRotation: -46, ueInternalRotation: 9, externalRotation: 46, ueExternalRotation: 1, ankylosis: -46, ueAnkylosis: 10 },
+    { internalRotation: -47, ueInternalRotation: 9, externalRotation: 47, ueExternalRotation: 1, ankylosis: -47, ueAnkylosis: 10 },
+    { internalRotation: -48, ueInternalRotation: 9, externalRotation: 48, ueExternalRotation: 1, ankylosis: -48, ueAnkylosis: 10 },
+    { internalRotation: -49, ueInternalRotation: 9, externalRotation: 49, ueExternalRotation: 1, ankylosis: -49, ueAnkylosis: 10 },
+    { internalRotation: -50, ueInternalRotation: 9, externalRotation: 50, ueExternalRotation: 1, ankylosis: -50, ueAnkylosis: 10 },
+    { internalRotation: -51, ueInternalRotation: 9, externalRotation: 51, ueExternalRotation: 1, ankylosis: -51, ueAnkylosis: 10 },
+    { internalRotation: -52, ueInternalRotation: 9, externalRotation: 52, ueExternalRotation: 1, ankylosis: -52, ueAnkylosis: 10 },
+    { internalRotation: -53, ueInternalRotation: 9, externalRotation: 53, ueExternalRotation: 1, ankylosis: -53, ueAnkylosis: 10 },
+    { internalRotation: -54, ueInternalRotation: 9, externalRotation: 54, ueExternalRotation: 1, ankylosis: -54, ueAnkylosis: 10 },
+    { internalRotation: -55, ueInternalRotation: 10, externalRotation: 55, ueExternalRotation: 1, ankylosis: -55, ueAnkylosis: 10 },
+    { internalRotation: -56, ueInternalRotation: 10, externalRotation: 56, ueExternalRotation: 0, ankylosis: -56, ueAnkylosis: 10 },
+    { internalRotation: -57, ueInternalRotation: 10, externalRotation: 57, ueExternalRotation: 0, ankylosis: -57, ueAnkylosis: 10 },
+    { internalRotation: -58, ueInternalRotation: 10, externalRotation: 58, ueExternalRotation: 0, ankylosis: -58, ueAnkylosis: 10 },
+    { internalRotation: -59, ueInternalRotation: 10, externalRotation: 59, ueExternalRotation: 0, ankylosis: -59, ueAnkylosis: 10 },
+    { internalRotation: -60, ueInternalRotation: 10, externalRotation: 60, ueExternalRotation: 0, ankylosis: -60, ueAnkylosis: 10 },
+    { internalRotation: -61, ueInternalRotation: 10, externalRotation: 61, ueExternalRotation: 0, ankylosis: -61, ueAnkylosis: 10 },
+    { internalRotation: -62, ueInternalRotation: 10, externalRotation: 62, ueExternalRotation: 0, ankylosis: -62, ueAnkylosis: 10 },
+    { internalRotation: -63, ueInternalRotation: 10, externalRotation: 63, ueExternalRotation: 0, ankylosis: -63, ueAnkylosis: 10 },
+    { internalRotation: -64, ueInternalRotation: 10, externalRotation: 64, ueExternalRotation: 0, ankylosis: -64, ueAnkylosis: 10 },
+    { internalRotation: -65, ueInternalRotation: 11, externalRotation: 65, ueExternalRotation: 0, ankylosis: -65, ueAnkylosis: 11 },
+    { internalRotation: -66, ueInternalRotation: 11, externalRotation: 66, ueExternalRotation: 0, ankylosis: -66, ueAnkylosis: 11 },
+    { internalRotation: -67, ueInternalRotation: 11, externalRotation: 67, ueExternalRotation: 0, ankylosis: -67, ueAnkylosis: 11 },
+    { internalRotation: -68, ueInternalRotation: 11, externalRotation: 68, ueExternalRotation: 0, ankylosis: -68, ueAnkylosis: 11 },
+    { internalRotation: -69, ueInternalRotation: 11, externalRotation: 69, ueExternalRotation: 0, ankylosis: -69, ueAnkylosis: 11 },
+    { internalRotation: -70, ueInternalRotation: 11, externalRotation: 70, ueExternalRotation: 0, ankylosis: -70, ueAnkylosis: 11 },
+    { internalRotation: -71, ueInternalRotation: 11, externalRotation: 71, ueExternalRotation: 0, ankylosis: -71, ueAnkylosis: 11 },
+    { internalRotation: -72, ueInternalRotation: 11, externalRotation: 72, ueExternalRotation: 0, ankylosis: -72, ueAnkylosis: 11 },
+    { internalRotation: -73, ueInternalRotation: 11, externalRotation: 73, ueExternalRotation: 0, ankylosis: -73, ueAnkylosis: 11 },
+    { internalRotation: -74, ueInternalRotation: 11, externalRotation: 74, ueExternalRotation: 0, ankylosis: -74, ueAnkylosis: 11 },
+    { internalRotation: -75, ueInternalRotation: 11, externalRotation: 75, ueExternalRotation: 0, ankylosis: -75, ueAnkylosis: 11 },
+    { internalRotation: -76, ueInternalRotation: 11, externalRotation: 76, ueExternalRotation: 0, ankylosis: -76, ueAnkylosis: 11 },
+    { internalRotation: -77, ueInternalRotation: 11, externalRotation: 77, ueExternalRotation: 0, ankylosis: -77, ueAnkylosis: 11 },
+    { internalRotation: -78, ueInternalRotation: 11, externalRotation: 78, ueExternalRotation: 0, ankylosis: -78, ueAnkylosis: 11 },
+    { internalRotation: -79, ueInternalRotation: 11, externalRotation: 79, ueExternalRotation: 0, ankylosis: -79, ueAnkylosis: 11 },
+    { internalRotation: -80, ueInternalRotation: 11, externalRotation: 80, ueExternalRotation: 0, ankylosis: -80, ueAnkylosis: 11 },
+    { internalRotation: -81, ueInternalRotation: 11, externalRotation: 81, ueExternalRotation: 0, ankylosis: -81, ueAnkylosis: 11 },
+    { internalRotation: -82, ueInternalRotation: 11, externalRotation: 82, ueExternalRotation: 0, ankylosis: -82, ueAnkylosis: 11 },
+    { internalRotation: -83, ueInternalRotation: 11, externalRotation: 83, ueExternalRotation: 0, ankylosis: -83, ueAnkylosis: 11 },
+    { internalRotation: -84, ueInternalRotation: 11, externalRotation: 84, ueExternalRotation: 0, ankylosis: -84, ueAnkylosis: 11 },
+    { internalRotation: -85, ueInternalRotation: 12, externalRotation: 85, ueExternalRotation: 0, ankylosis: -85, ueAnkylosis: 12 },
+    { internalRotation: -86, ueInternalRotation: 12, externalRotation: 86, ueExternalRotation: 0, ankylosis: -86, ueAnkylosis: 12 },
+    { internalRotation: -87, ueInternalRotation: 12, externalRotation: 87, ueExternalRotation: 0, ankylosis: -87, ueAnkylosis: 12 },
+    { internalRotation: -88, ueInternalRotation: 12, externalRotation: 88, ueExternalRotation: 0, ankylosis: -88, ueAnkylosis: 12 },
+    { internalRotation: -89, ueInternalRotation: 12, externalRotation: 89, ueExternalRotation: 0, ankylosis: -89, ueAnkylosis: 12 },
+    { internalRotation: -90, ueInternalRotation: 12, externalRotation: 90, ueExternalRotation: 0, ankylosis: -90, ueAnkylosis: 12 },
+    { internalRotation: '<-90', ueInternalRotation: 12, externalRotation: '>90', ueExternalRotation: 0, ankylosis: '<-90', ueAnkylosis: 12 }
+];
+
+    document.addEventListener('DOMContentLoaded', (event) => {
+        console.log("DOM fully loaded");
+
+        const cards = document.querySelectorAll('.card');
+        const calculateBtn = document.getElementById('calculate');
+        const resultDiv = document.getElementById('result');
+        const optionsContainer = document.getElementById('optionsContainer');
+        const currentCardTitle = document.getElementById('currentCardTitle');
+        const optionsList = document.getElementById('optionsList');
+        const nextCardBtn = document.getElementById('nextCard');
+        const calculatorsContainer = document.getElementById('calculatorsContainer');
+        const calculatorsList = document.getElementById('calculatorsList');
+        const totalImpairmentDiv = document.getElementById('totalImpairment');
+        const finalizeImpairmentBtn = document.getElementById('finalizeImpairment');
+
+        let selectedCards = [];
+        let selectedOptions = {};
+        let currentCardIndex = 0;
+
+        const cardOptions = {
+            shoulder: ['ROM', 'Strength', 'Arthroplasty', 'Instability/Subluxation/Dislocation', 'Synovial Hypertrophy'],
+            elbow: ['ROM', 'Strength', 'Arthroplasty', 'Synovial Hypertrophy', 'Persistent Subluxation/Dislocation', 'Excessive Passive Mediolateral Instability', 'Excessive Active Mediolateral Deviation'],
+            wrist: ['ROM', 'Arthroplasty', 'Synovial Hypertrophy', 'Excessive Active Mediolateral Deviation', 'Carpal Instability Patterns'],
+            thumb: ['ROM', 'Arthroplasty', 'Sensory', 'Amputation', 'Synovial Hypertrophy', 'Lateral Deviation', 'Digit Rotational Deformity', 'Persistent Joint Subluxation/Dislocation', 'Joint Passive Mediolateral Instability', 'Constrictive Tenosynovitis'],
+            index: ['ROM', 'Arthroplasty', 'Sensory', 'Amputation', 'Synovial Hypertrophy', 'Lateral Deviation', 'Digit Rotation Deformity', 'Persistent Joint Subluxation/Dislocation', 'Joint Passive Mediolateral Instability', 'Intrinsic Tightness', 'Constrictive Tenosynovitis', 'Extensor Tendon Subluxation at MP Joint'],
+            middle: ['ROM', 'Arthroplasty', 'Sensory', 'Amputation', 'Synovial Hypertrophy', 'Lateral Deviation', 'Digit Rotation Deformity', 'Persistent Joint Subluxation/Dislocation', 'Joint Passive Mediolateral Instability', 'Intrinsic Tightness', 'Constrictive Tenosynovitis', 'Extensor Tendon Subluxation at MP Joint'],
+            ring: ['ROM', 'Arthroplasty', 'Sensory', 'Amputation', 'Synovial Hypertrophy', 'Lateral Deviation', 'Digit Rotation Deformity', 'Persistent Joint Subluxation/Dislocation', 'Joint Passive Mediolateral Instability', 'Intrinsic Tightness', 'Constrictive Tenosynovitis', 'Extensor Tendon Subluxation at MP Joint'],
+            little: ['ROM', 'Arthroplasty', 'Sensory', 'Amputation', 'Synovial Hypertrophy', 'Lateral Deviation', 'Digit Rotation Deformity', 'Persistent Joint Subluxation/Dislocation', 'Joint Passive Mediolateral Instability', 'Intrinsic Tightness', 'Constrictive Tenosynovitis', 'Extensor Tendon Subluxation at MP Joint'],
+            nerve: ['Peripheral Nerves', 'CRPS', 'Spinal Nerves', 'Brachial Plexus'],
+            vascular: ['Option 1', 'Option 2', 'Option 3'],
+            grip: ['Grip Strength', 'Pinch Strength'],
+            amputation: ['Option 1', 'Option 2', 'Option 3']
+        };
+
+        cards.forEach(card => {
+            card.addEventListener('click', () => {
+                console.log("Card clicked:", card.dataset.value);
+                card.classList.toggle('selected');
+            });
+        });
+
+        calculateBtn.addEventListener('click', () => {
+            console.log("Calculate button clicked");
+            selectedCards = Array.from(document.querySelectorAll('.card.selected')).map(card => card.dataset.value);
+            console.log("Selected cards:", selectedCards);
+            if (selectedCards.length > 0) {
+                currentCardIndex = 0;
+                selectedOptions = {};
+                showOptionsForCard(selectedCards[currentCardIndex]);
+            } else {
+                resultDiv.textContent = "Please select at least one card.";
+            }
+        });
+
+        function showOptionsForCard(cardValue) {
+            console.log("Showing options for:", cardValue);
+            currentCardTitle.textContent = `Options for ${cardValue.charAt(0).toUpperCase() + cardValue.slice(1)}`;
+            optionsList.innerHTML = '';
+            cardOptions[cardValue].forEach(option => {
+                const optionElement = document.createElement('div');
+                optionElement.classList.add('option');
+                optionElement.textContent = option;
+                optionElement.addEventListener('click', () => {
+                    optionElement.classList.toggle('selected');
+                });
+                optionsList.appendChild(optionElement);
+            });
+            optionsContainer.style.display = 'block';
+            calculatorsContainer.style.display = 'none';
+        }
+
+        nextCardBtn.addEventListener('click', () => {
+            console.log("Next button clicked");
+            const cardValue = selectedCards[currentCardIndex];
+            selectedOptions[cardValue] = Array.from(document.querySelectorAll('.option.selected')).map(option => option.textContent);
+            console.log("Selected options:", selectedOptions);
+            
+            currentCardIndex++;
+            if (currentCardIndex < selectedCards.length) {
+                showOptionsForCard(selectedCards[currentCardIndex]);
+            } else {
+                showCalculators();
+            }
+        });
+
+function showCalculators() {
+    console.log("Showing calculators");
+    optionsContainer.style.display = 'none';
+    calculatorsContainer.style.display = 'block';
+    calculatorsList.innerHTML = '';
+    
+    for (const [cardValue, options] of Object.entries(selectedOptions)) {
+        options.forEach(option => {
+            const calculatorCard = document.createElement('div');
+            calculatorCard.classList.add('calculator-card');
+            if (cardValue === 'shoulder' && option === 'ROM') {
+                calculatorCard.innerHTML = `
+                    <h3>Shoulder - ROM</h3>
+                    <table class="rom-table">
+                        <tr>
+                            <th></th>
+                            <th>Flexion</th>
+                            <th>Extension</th>
+                            <th>Ankylosis</th>
+                            <th>Imp%</th>
+                        </tr>
+                        <tr>
+                            <td>Angle°</td>
+                            <td><input type="number" id="shoulder-flexion" min="0" max="180"></td>
+                            <td><input type="number" id="shoulder-extension" min="0" max="60"></td>
+                            <td><input type="number" id="shoulder-ankylosis-fe" min="0" max="180"></td>
+                            <td rowspan="2" id="shoulder-fe-imp">0</td>
+                        </tr>
+                        <tr>
+                            <td>Imp%</td>
+                            <td id="shoulder-flexion-imp">0</td>
+                            <td id="shoulder-extension-imp">0</td>
+                            <td id="shoulder-ankylosis-fe-imp">0</td>
+                        </tr>
+                        <tr>
+                            <th></th>
+                            <th>Abduction</th>
+                            <th>Adduction</th>
+                            <th>Ankylosis</th>
+                            <th>Imp%</th>
+                        </tr>
+                        <tr>
+                            <td>Angle°</td>
+                            <td><input type="number" id="shoulder-abduction" min="0" max="180"></td>
+                            <td><input type="number" id="shoulder-adduction" min="0" max="50"></td>
+                            <td><input type="number" id="shoulder-ankylosis-aa" min="0" max="180"></td>
+                            <td rowspan="2" id="shoulder-aa-imp">0</td>
+                        </tr>
+                        <tr>
+                            <td>Imp%</td>
+                            <td id="shoulder-abduction-imp">0</td>
+                            <td id="shoulder-adduction-imp">0</td>
+                            <td id="shoulder-ankylosis-aa-imp">0</td>
+                        </tr>
+                        <tr>
+                            <th></th>
+                            <th>Internal Rotation</th>
+                            <th>External Rotation</th>
+                            <th>Ankylosis</th>
+                            <th>Imp%</th>
+                        </tr>
+                        <tr>
+                            <td>Angle°</td>
+                            <td><input type="number" id="shoulder-internal-rotation" min="0" max="90"></td>
+                            <td><input type="number" id="shoulder-external-rotation" min="0" max="90"></td>
+                            <td><input type="number" id="shoulder-ankylosis-ie" min="0" max="90"></td>
+                            <td rowspan="2" id="shoulder-ie-imp">0</td>
+                        </tr>
+                        <tr>
+                            <td>Imp%</td>
+                            <td id="shoulder-internal-rotation-imp">0</td>
+                            <td id="shoulder-external-rotation-imp">0</td>
+                            <td id="shoulder-ankylosis-ie-imp">0</td>
+                        </tr>
+                    </table>
+                    <p class="total-impairment"><strong>Total: <span id="shoulder-rom-total">0</span> UE = <span id="shoulder-rom-wpi">0</span> WPI</strong></p>
+                `;
+            } else if (cardValue === 'shoulder' && option === 'Strength') {
+                calculatorCard.innerHTML = `
+                    <h3>Shoulder - Muscle Strength</h3>
+                    <table class="strength-table">
+                        <tr class="header-row">
+                            <th>Motion</th>
+                            <th>Max UE</th>
+                            <th>Strength Deficit % (max 50%)</th>
+                            <th>UE Impairment</th>
+                        </tr>
+                        <tr>
+                            <td>Flexion</td>
+                            <td>24</td>
+                            <td><input type="number" id="shoulder-flexion-strength-deficit" min="0" max="50" step="1"></td>
+                            <td><input type="number" id="shoulder-flexion-strength-imp" min="0" max="12" step="1"></td>
+                        </tr>
+                        <tr>
+                            <td>Extension</td>
+                            <td>6</td>
+                            <td><input type="number" id="shoulder-extension-strength-deficit" min="0" max="50" step="1"></td>
+                            <td><input type="number" id="shoulder-extension-strength-imp" min="0" max="3" step="1"></td>
+                        </tr>
+                        <tr>
+                            <td>Abduction</td>
+                            <td>12</td>
+                            <td><input type="number" id="shoulder-abduction-strength-deficit" min="0" max="50" step="1"></td>
+                            <td><input type="number" id="shoulder-abduction-strength-imp" min="0" max="6" step="1"></td>
+                        </tr>
+                        <tr>
+                            <td>Adduction</td>
+                            <td>6</td>
+                            <td><input type="number" id="shoulder-adduction-strength-deficit" min="0" max="50" step="1"></td>
+                            <td><input type="number" id="shoulder-adduction-strength-imp" min="0" max="3" step="1"></td>
+                        </tr>
+                        <tr>
+                            <td>Internal Rotation</td>
+                            <td>6</td>
+                            <td><input type="number" id="shoulder-internal-rotation-strength-deficit" min="0" max="50" step="1"></td>
+                            <td><input type="number" id="shoulder-internal-rotation-strength-imp" min="0" max="3" step="1"></td>
+                        </tr>
+                        <tr>
+                            <td>External Rotation</td>
+                            <td>6</td>
+                            <td><input type="number" id="shoulder-external-rotation-strength-deficit" min="0" max="50" step="1"></td>
+                            <td><input type="number" id="shoulder-external-rotation-strength-imp" min="0" max="3" step="1"></td>
+                        </tr>
+                    </table>
+                    <p class="total-impairment"><strong>Total: <span id="shoulder-strength-total-ue">0 UE = 0 WPI</span></strong></p>
+                    <div class="instructions">
+                        <p>Instructions: Enter the strength deficit percent provided by physician for each motion. If a strength deficit percent is not provided by physician, enter the strength UE impairment for each motion provided by physician. For reference, Grade 4 strength is 1 to 25% strength deficit and Grade 3 Strength is 26 to 50% strength deficit.</p>
+                    </div>
+                    <div class="reference">
+                        <p>Reference: Table 16-35 on p. 510 of The AMA Guides 5th Edition</p>
+                    </div>
+                `;
+                    } else if (cardValue === 'shoulder' && option === 'Arthroplasty') {
+                        calculatorCard.innerHTML = `
+                            <h3>Shoulder - Arthroplasty</h3>
+                            <div class="arthroplasty-options">
+                                <div class="arthroplasty-option" data-value="30">
+                                    <input type="radio" id="total-shoulder-resection" name="shoulder-arthroplasty" value="30">
+                                    <label for="total-shoulder-resection">Total Shoulder Resection Arthroplasty</label>
+                                </div>
+                                <div class="arthroplasty-option" data-value="24">
+                                    <input type="radio" id="total-shoulder-implant" name="shoulder-arthroplasty" value="24">
+                                    <label for="total-shoulder-implant">Total Shoulder Implant Arthroplasty</label>
+                                </div>
+                                <div class="arthroplasty-option" data-value="10">
+                                    <input type="radio" id="distal-clavicle-resection" name="shoulder-arthroplasty" value="10">
+                                    <label for="distal-clavicle-resection">Distal Clavicle Resection Arthroplasty</label>
+                                </div>
+                                <div class="arthroplasty-option" data-value="3">
+                                    <input type="radio" id="proximal-clavicle-resection" name="shoulder-arthroplasty" value="3">
+                                    <label for="proximal-clavicle-resection">Proximal Clavicle Resection Arthroplasty</label>
+                                </div>
+                            </div>
+                            <p class="total-impairment"><strong>Total: <span id="shoulder-arthroplasty-total">0 UE = 0 WPI</span></strong></p>
+                        `;
+} else if (cardValue === 'shoulder' && option === 'Synovial Hypertrophy') {
+    calculatorCard.innerHTML = `
+<h3>Shoulder - Synovial Hypertrophy</h3>
+<table class="synovial-hypertrophy-table">
+    <thead>
+        <tr>
+            <th>Shoulder Joints</th>
+            <th>Max UE</th>
+            <th>Mild (10%)</th>
+            <th>Moderate (20%)</th>
+            <th>Severe (30%)</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>Glenohumeral</td>
+            <td>60</td>
+            <td><input type="checkbox" class="synovial-checkbox" data-joint="glenohumeral" value="6"> 6</td>
+            <td><input type="checkbox" class="synovial-checkbox" data-joint="glenohumeral" value="12"> 12</td>
+            <td><input type="checkbox" class="synovial-checkbox" data-joint="glenohumeral" value="18"> 18</td>
+        </tr>
+        <tr>
+            <td>Acromioclavicular</td>
+            <td>25</td>
+            <td><input type="checkbox" class="synovial-checkbox" data-joint="acromioclavicular" value="3"> 3</td>
+            <td><input type="checkbox" class="synovial-checkbox" data-joint="acromioclavicular" value="5"> 5</td>
+            <td><input type="checkbox" class="synovial-checkbox" data-joint="acromioclavicular" value="8"> 8</td>
+        </tr>
+        <tr>
+            <td>Sternoclavicular</td>
+            <td>5</td>
+            <td><input type="checkbox" class="synovial-checkbox" data-joint="sternoclavicular" value="1"> 1</td>
+            <td><input type="checkbox" class="synovial-checkbox" data-joint="sternoclavicular" value="1"> 1</td>
+            <td><input type="checkbox" class="synovial-checkbox" data-joint="sternoclavicular" value="2"> 2</td>
+        </tr>
+    </tbody>
+</table>
+<p class="instructions">Instructions: Check up to one box for each joint as applicable.</p>
+<p class="reference">Reference: Tables 16-19 & 16-18 on pages 500 & 499 of The AMA Guides 5th Ed.</p>
+<p class="total-impairment"><strong>Total: <span id="shoulder-synovial-hypertrophy-total">0 UE = 0 WPI</span></strong></p>
+    `;
+
+    // Set up event listeners for the checkboxes
+    const checkboxes = calculatorCard.querySelectorAll('.synovial-checkbox');
+    checkboxes.forEach(checkbox => {
+        checkbox.addEventListener('change', calculateShoulderSynovialHypertrophy);
+    });
+                        } else if (cardValue === 'shoulder' && option === 'Instability/Subluxation/Dislocation') {
+                        calculatorCard.innerHTML = `
+                            <h3>Shoulder - Instability/Subluxation/Dislocation</h3>
+                            <div class="instability-options">
+                                <div class="instability-option" data-value="6">
+                                    <input type="radio" id="class-1-instability" name="shoulder-instability" value="6">
+                                    <label for="class-1-instability">Class 1 - Occult Instability (6 UE)</label>
+                                </div>
+                                <div class="instability-option" data-value="12">
+                                    <input type="radio" id="class-2-instability" name="shoulder-instability" value="12">
+                                    <label for="class-2-instability">Class 2 - Subluxating Humeral Head (12 UE)</label>
+                                </div>
+                                <div class="instability-option" data-value="24">
+                                    <input type="radio" id="class-3-instability" name="shoulder-instability" value="24">
+                                    <label for="class-3-instability">Class 3 - Dislocating Humeral Head (24 UE)</label>
+                                </div>
+                            </div>
+                            <p class="total-impairment"><strong>Total: <span id="shoulder-instability-total">0 UE = 0 WPI</span></strong></p>
+                        `;
+                        calculatorCard.querySelectorAll('input[name="shoulder-instability"]').forEach(option => {
+                            option.addEventListener('change', calculateShoulderInstability);
+                        });
+                    } else {
+                        calculatorCard.innerHTML = `
+                            <h3>${cardValue.charAt(0).toUpperCase() + cardValue.slice(1)} - ${option}</h3>
+                            <div class="input-group">
+                                <label for="${cardValue}-${option}-impairment">Impairment (%):</label>
+                                <input type="number" id="${cardValue}-${option}-impairment" min="0" max="100" step="0.1">
+                            </div>
+                            <div class="input-group">
+                                <label for="${cardValue}-${option}-comments">Comments:</label>
+                                <input type="text" id="${cardValue}-${option}-comments">
+                            </div>
+                        `;
+                    }
+                    calculatorsList.appendChild(calculatorCard);
+                });
+            }
+      const totalImpairmentCard = document.createElement('div');
+    totalImpairmentCard.classList.add('calculator-card');
+    totalImpairmentCard.id = 'total-impairment-card';
+    totalImpairmentCard.innerHTML = `
+        <h3 id="total-impairment-title">Total Impairment</h3>
+        <div id="impairment-breakdown"></div>
+        <p class="total-impairment"><strong>Total: <span id="total-impairment-result">0 UE = 0 WPI</span></strong></p>
+    `;
+    calculatorsList.appendChild(totalImpairmentCard);
+  
+            setupCalculatorEventListeners();
+            updateTotalImpairment();
+        }
+
+function setupCalculatorEventListeners() {
+    console.log("Setting up calculator event listeners");
+    
+    if (selectedOptions.shoulder && selectedOptions.shoulder.includes('ROM')) {
+        const shoulderInputs = ['flexion', 'extension', 'abduction', 'adduction', 'internal-rotation', 'external-rotation', 'ankylosis-fe', 'ankylosis-aa', 'ankylosis-ie'];
+        shoulderInputs.forEach(input => {
+            const element = document.getElementById(`shoulder-${input}`);
+            if (element) {
+                element.addEventListener('input', calculateShoulderROM);
+                console.log(`Added event listener for shoulder-${input}`);
+            } else {
+                console.log(`Element not found: shoulder-${input}`);
+            }
+        });
+    }
+
+            if (selectedOptions.shoulder && selectedOptions.shoulder.includes('Strength')) {
+                const movements = ['flexion', 'extension', 'abduction', 'adduction', 'internal-rotation', 'external-rotation'];
+                movements.forEach(movement => {
+                    const deficitElement = document.getElementById(`shoulder-${movement}-strength-deficit`);
+                    const impElement = document.getElementById(`shoulder-${movement}-strength-imp`);
+                    if (deficitElement) {
+                        deficitElement.addEventListener('input', (e) => calculateShoulderStrength(movement, 'deficit'));
+                    }
+                    if (impElement) {
+                        impElement.addEventListener('input', (e) => calculateShoulderStrength(movement, 'imp'));
+                    }
+                });
+            }
+
+            if (selectedOptions.shoulder && selectedOptions.shoulder.includes('Arthroplasty')) {
+                console.log("Setting up arthroplasty event listeners");
+                const arthroplastyOptions = document.querySelectorAll('input[name="shoulder-arthroplasty"]');
+                console.log("Number of arthroplasty options found:", arthroplastyOptions.length);
+                arthroplastyOptions.forEach(option => {
+                    option.addEventListener('change', calculateShoulderArthroplasty);
+                    console.log("Added event listener to option:", option.value);
+                });
+            }
+        } 
+
+function calculateShoulderROM() {
+    console.log("Calculating Shoulder ROM");
+    updateShoulderImpairment();
+    updateTotalImpairment();
+}
+
+        function calculateShoulderStrength(movement, inputType) {
+            const deficitInput = document.getElementById(`shoulder-${movement}-strength-deficit`);
+            const impInput = document.getElementById(`shoulder-${movement}-strength-imp`);
+            const maxUE = parseInt(deficitInput.closest('tr').children[1].textContent);
+
+            if (inputType === 'deficit') {
+                let deficit = Math.min(parseFloat(deficitInput.value) || 0, 50);
+                deficitInput.value = deficit;
+                const impairment = Math.round((deficit / 100) * maxUE);
+                impInput.value = impairment;
+            } else {
+                let impairment = Math.min(parseInt(impInput.value) || 0, Math.floor(maxUE / 2));
+                impInput.value = impairment;
+                const deficit = Math.round((impairment / maxUE) * 100);
+                deficitInput.value = deficit;
+            }
+
+            updateTotalShoulderStrengthImpairment();
+            updateTotalImpairment();
+        }
+
+        function calculateShoulderArthroplasty() {
+            console.log("calculateShoulderArthroplasty function called");
+            const selectedOption = document.querySelector('input[name="shoulder-arthroplasty"]:checked');
+            const totalElement = document.getElementById('shoulder-arthroplasty-total');
+            
+            if (selectedOption) {
+                const ueImpairment = parseInt(selectedOption.value);
+                const wpi = Math.round(ueImpairment * 0.6);
+                totalElement.textContent = `${ueImpairment} UE = ${wpi} WPI`;
+            } else {
+                totalElement.textContent = '0 UE = 0 WPI';
+    }
+    
+    updateTotalImpairment(); 
+}
+
+        function calculateShoulderInstability() {
+            console.log("calculateShoulderInstability function called");
+            const selectedOption = document.querySelector('input[name="shoulder-instability"]:checked');
+            const totalElement = document.getElementById('shoulder-instability-total');
+            
+            if (selectedOption) {
+                const ueImpairment = parseInt(selectedOption.value);
+                const wpi = Math.round(ueImpairment * 0.6);
+                totalElement.textContent = `${ueImpairment} UE = ${wpi} WPI`;
+            } else {
+                totalElement.textContent = '0 UE = 0 WPI';
+    }
+    
+    updateTotalImpairment(); 
+}
+
+function calculateShoulderSynovialHypertrophy(event) {
+    const changedCheckbox = event.target;
+    const joint = changedCheckbox.dataset.joint;
+    
+    // Uncheck other checkboxes for the same joint
+    document.querySelectorAll(`.synovial-checkbox[data-joint="${joint}"]`).forEach(checkbox => {
+        if (checkbox !== changedCheckbox) {
+            checkbox.checked = false;
+        }
+    });
+
+    // Calculate total impairment
+    let totalUEImpairment = 0;
+    document.querySelectorAll('.synovial-checkbox:checked').forEach(checkbox => {
+        totalUEImpairment += parseInt(checkbox.value);
+    });
+
+    const totalWPI = Math.round(totalUEImpairment * 0.6);
+    document.getElementById('shoulder-synovial-hypertrophy-total').textContent = `${totalUEImpairment} UE = ${totalWPI} WPI`;
+
+    updateTotalImpairment();
+}
+
+        function updateTotalShoulderStrengthImpairment() {
+            const movements = ['flexion', 'extension', 'abduction', 'adduction', 'internal-rotation', 'external-rotation'];
+            let totalUEImpairment = 0;
+
+            movements.forEach(movement => {
+                const impInput = document.getElementById(`shoulder-${movement}-strength-imp`);
+                totalUEImpairment += parseInt(impInput.value) || 0;
+            });
+
+            const totalWPI = Math.round(totalUEImpairment * 0.6);
+
+            document.getElementById('shoulder-strength-total-ue').textContent = `${totalUEImpairment} UE = ${totalWPI} WPI`;
+        }
+
+        function updateShoulderImpairment() {
+    console.log("Updating Shoulder Impairment");
+    const movements = [
+        { name: 'flexion', dataArray: SHOULDERFlexionExtensionData, group: 'fe' },
+        { name: 'extension', dataArray: SHOULDERFlexionExtensionData, group: 'fe' },
+        { name: 'abduction', dataArray: SHOULDERAbductionAdductionData, group: 'aa' },
+        { name: 'adduction', dataArray: SHOULDERAbductionAdductionData, group: 'aa' },
+        { name: 'internal-rotation', dataArray: SHOULDERInternalExternalRotationData, field: 'internalRotation', group: 'ie' },
+        { name: 'external-rotation', dataArray: SHOULDERInternalExternalRotationData, field: 'externalRotation', group: 'ie' }
+    ];
+
+    let impairments = {
+        fe: { normal: 0, ankylosis: 0 },
+        aa: { normal: 0, ankylosis: 0 },
+        ie: { normal: 0, ankylosis: 0 }
+    };
+
+    movements.forEach(movement => {
+        const angleInput = document.getElementById(`shoulder-${movement.name}`);
+        const impOutput = document.getElementById(`shoulder-${movement.name}-imp`);
+        const angle = angleInput.value !== '' ? parseInt(angleInput.value) : null;
+
+        if (angle !== null) {
+            const imp = findImpairment(angle, movement.dataArray, movement.field || movement.name);
+            impOutput.textContent = imp;
+            impairments[movement.group].normal += imp;
+        } else {
+            impOutput.textContent = '';
+        }
+    });
+
+    // Handle ankylosis
+    ['fe', 'aa', 'ie'].forEach(group => {
+        const ankylosisInput = document.getElementById(`shoulder-ankylosis-${group}`);
+        const ankylosisImpOutput = document.getElementById(`shoulder-ankylosis-${group}-imp`);
+        const ankylosisAngle = ankylosisInput.value !== '' ? parseInt(ankylosisInput.value) : null;
+
+        if (ankylosisAngle !== null) {
+            const dataArray = group === 'fe' ? SHOULDERFlexionExtensionData :
+                              group === 'aa' ? SHOULDERAbductionAdductionData :
+                              SHOULDERInternalExternalRotationData;
+            const imp = findImpairment(ankylosisAngle, dataArray, 'ankylosis');
+            ankylosisImpOutput.textContent = imp;
+            impairments[group].ankylosis = imp;
+        } else {
+            ankylosisImpOutput.textContent = '';
+        }
+    });
+
+    // Calculate and update subtotals
+    let totalImp = 0;
+    ['fe', 'aa', 'ie'].forEach(group => {
+        const subtotal = Math.max(impairments[group].normal, impairments[group].ankylosis);
+        document.getElementById(`shoulder-${group}-imp`).textContent = subtotal;
+        totalImp += subtotal;
+    });
+
+    // Calculate total shoulder impairment
+    const wpi = Math.round(totalImp * 0.6);
+
+    document.getElementById('shoulder-rom-total').textContent = totalImp;
+    document.getElementById('shoulder-rom-wpi').textContent = wpi;
+}
+
+function findImpairment(angle, dataArray, angleField) {
+    let impairment = 0;
+    for (let i = 0; i < dataArray.length; i++) {
+        let dataAngle = dataArray[i][angleField];
+        if (typeof dataAngle === 'string') {
+            if (dataAngle.startsWith('<') && angle <= parseInt(dataAngle.slice(1))) {
+                impairment = dataArray[i]['ue' + angleField.charAt(0).toUpperCase() + angleField.slice(1)];
+                break;
+            } else if (dataAngle.startsWith('>') && angle >= parseInt(dataAngle.slice(1))) {
+                impairment = dataArray[i]['ue' + angleField.charAt(0).toUpperCase() + angleField.slice(1)];
+                break;
+            }
+        } else if (angle === dataAngle) {
+            impairment = dataArray[i]['ue' + angleField.charAt(0).toUpperCase() + angleField.slice(1)];
+            break;
+        }
+    }
+    return impairment;
+}
+
+function combineImpairments(impairments) {
+    if (impairments.length === 0) return 0;
+    if (impairments.length === 1) return impairments[0];
+
+    impairments.sort((a, b) => b - a); // Sort in descending order
+    let result = impairments[0];
+
+    for (let i = 1; i < impairments.length; i++) {
+        result = result + impairments[i] * (1 - result / 100);
+        result = Math.round(result * 10) / 10; // Round to nearest 0.1%
+    }
+
+    return Math.round(result); // Round to nearest whole percent for final result
+}
+
+function updateTotalImpairment() {
+    const selectedBodyPart = selectedCards[0].charAt(0).toUpperCase() + selectedCards[0].slice(1);
+    const totalImpairmentTitle = document.getElementById('total-impairment-title');
+    totalImpairmentTitle.textContent = `${selectedBodyPart} - Total Impairment`;
+
+    const impairmentBreakdown = document.getElementById('impairment-breakdown');
+    const totalImpairmentResult = document.getElementById('total-impairment-result');
+
+    let impairments = [];
+    let breakdownHTML = '';
+
+    // Collect impairments from each calculator
+    if (selectedOptions[selectedCards[0]].includes('Synovial Hypertrophy')) {
+        const synovialImpairment = parseInt(document.getElementById('shoulder-synovial-hypertrophy-total').textContent.split(' ')[0]);
+        impairments.push(synovialImpairment);
+        breakdownHTML += `<p>Synovial Hypertrophy: ${synovialImpairment} UE</p>`;
+    }
+
+    if (selectedOptions[selectedCards[0]].includes('ROM')) {
+        const romImpairment = parseInt(document.getElementById('shoulder-rom-total').textContent);
+        impairments.push(romImpairment);
+        breakdownHTML += `<p>ROM: ${romImpairment} UE</p>`;
+    }
+
+        if (selectedOptions[selectedCards[0]].includes('Strength')) {
+        const strengthImpairment = parseInt(document.getElementById('shoulder-strength-total-ue').textContent.split(' ')[0]);
+        if (!isNaN(strengthImpairment) && strengthImpairment > 0) {
+            impairments.push(strengthImpairment);
+            breakdownHTML += `<p>Strength: ${strengthImpairment} UE</p>`;
+        }
+    }
+
+    if (selectedOptions[selectedCards[0]].includes('Arthroplasty')) {
+        const arthroplastyImpairment = parseInt(document.getElementById('shoulder-arthroplasty-total').textContent.split(' ')[0]);
+        if (!isNaN(arthroplastyImpairment) && arthroplastyImpairment > 0) {
+            impairments.push(arthroplastyImpairment);
+            breakdownHTML += `<p>Arthroplasty: ${arthroplastyImpairment} UE</p>`;
+        }
+    }
+
+    if (selectedOptions[selectedCards[0]].includes('Instability/Subluxation/Dislocation')) {
+        const instabilityImpairment = parseInt(document.getElementById('shoulder-instability-total').textContent.split(' ')[0]);
+        if (!isNaN(instabilityImpairment) && instabilityImpairment > 0) {
+            impairments.push(instabilityImpairment);
+            breakdownHTML += `<p>Instability: ${instabilityImpairment} UE</p>`;
+        }
+    }
+
+    if (impairments.length > 0) {
+        const combinedUE = combineImpairments(impairments);
+        const combinedWPI = Math.round(combinedUE * 0.6);
+
+        breakdownHTML += `<p><strong>Combined: ${impairments.join(' C ')} = ${combinedUE} UE = ${combinedWPI} WPI</strong></p>`;
+        totalImpairmentResult.textContent = `${combinedUE} UE = ${combinedWPI} WPI`;
+    } else {
+        breakdownHTML = '<p>No impairments calculated yet.</p>';
+        totalImpairmentResult.textContent = '0 UE = 0 WPI';
+    }
+
+    impairmentBreakdown.innerHTML = breakdownHTML;
+}
+
+    const combinedUE = combineImpairments(impairments);
+    const combinedWPI = Math.round(combinedUE * 0.6);
+
+    breakdownHTML += `<p><strong>Combined: ${impairments.join(' C ')} = ${combinedUE} UE = ${combinedWPI} WPI</strong></p>`;
+    impairmentBreakdown.innerHTML = breakdownHTML;
+    totalImpairmentResult.textContent = `${combinedUE} UE = ${combinedWPI} WPI`;
+});
+
+// Existing event listener
+finalizeImpairmentBtn.addEventListener('click', () => {
+    console.log("Finalize Impairment button clicked");
+    // Implement finalization logic here
+});
+        
+        finalizeImpairmentBtn.addEventListener('click', () => {
+            console.log("Finalize Impairment button clicked");
+            // Implement finalization logic here
+        });
+
+    </script>
+</body>
+</html>

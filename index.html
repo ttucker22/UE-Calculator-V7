@@ -1277,15 +1277,6 @@ function showCalculators() {
                     calculatorsList.appendChild(calculatorCard);
                 });
             }
-      const totalImpairmentCard = document.createElement('div');
-    totalImpairmentCard.classList.add('calculator-card');
-    totalImpairmentCard.id = 'total-impairment-card';
-    totalImpairmentCard.innerHTML = `
-        <h3 id="total-impairment-title">Total Impairment</h3>
-        <div id="impairment-breakdown"></div>
-        <p class="total-impairment"><strong>Total: <span id="total-impairment-result">0 UE = 0 WPI</span></strong></p>
-    `;
-    calculatorsList.appendChild(totalImpairmentCard);
   
             setupCalculatorEventListeners();
             updateTotalImpairment();
@@ -1541,17 +1532,21 @@ function updateTotalImpairment() {
     // Collect impairments from each calculator
     if (selectedOptions[selectedCards[0]].includes('Synovial Hypertrophy')) {
         const synovialImpairment = parseInt(document.getElementById('shoulder-synovial-hypertrophy-total').textContent.split(' ')[0]);
-        impairments.push(synovialImpairment);
-        breakdownHTML += `<p>Synovial Hypertrophy: ${synovialImpairment} UE</p>`;
+        if (!isNaN(synovialImpairment) && synovialImpairment > 0) {
+            impairments.push(synovialImpairment);
+            breakdownHTML += `<p>Synovial Hypertrophy: ${synovialImpairment} UE</p>`;
+        }
     }
 
     if (selectedOptions[selectedCards[0]].includes('ROM')) {
         const romImpairment = parseInt(document.getElementById('shoulder-rom-total').textContent);
-        impairments.push(romImpairment);
-        breakdownHTML += `<p>ROM: ${romImpairment} UE</p>`;
+        if (!isNaN(romImpairment) && romImpairment > 0) {
+            impairments.push(romImpairment);
+            breakdownHTML += `<p>ROM: ${romImpairment} UE</p>`;
+        }
     }
 
-        if (selectedOptions[selectedCards[0]].includes('Strength')) {
+    if (selectedOptions[selectedCards[0]].includes('Strength')) {
         const strengthImpairment = parseInt(document.getElementById('shoulder-strength-total-ue').textContent.split(' ')[0]);
         if (!isNaN(strengthImpairment) && strengthImpairment > 0) {
             impairments.push(strengthImpairment);
@@ -1579,7 +1574,12 @@ function updateTotalImpairment() {
         const combinedUE = combineImpairments(impairments);
         const combinedWPI = Math.round(combinedUE * 0.6);
 
-        breakdownHTML += `<p><strong>Combined: ${impairments.join(' C ')} = ${combinedUE} UE = ${combinedWPI} WPI</strong></p>`;
+        if (impairments.length === 1) {
+            breakdownHTML += `<p><strong>Combined: ${combinedUE} UE</strong></p>`;
+        } else {
+            breakdownHTML += `<p><strong>Combined: ${impairments.join(' C ')} = ${combinedUE} UE</strong></p>`;
+        }
+        
         totalImpairmentResult.textContent = `${combinedUE} UE = ${combinedWPI} WPI`;
     } else {
         breakdownHTML = '<p>No impairments calculated yet.</p>';
